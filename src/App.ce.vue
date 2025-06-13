@@ -6,10 +6,13 @@ import IconNewChat from './components/icons/IconNewChat.vue'
 import IconClose from '@/components/icons/IconClose.vue'
 import { useConfigHandler } from './composables/config.handler'
 import { useInitiatorStore } from './composables/initiator.store'
+import { useWebSocketHandler } from './composables/websocket.handler'
 
 const { config, openChat, setNewUserForm, closeChat } = useConfigHandler()
 
 const { iniateChatConnect } = useInitiatorStore()
+
+const { socketInstance, createInstance } = useWebSocketHandler()
 
 const widgetIsLoaded = ref(false)
 
@@ -20,7 +23,10 @@ const handleNewChat = () => {
 
 onMounted(() => {
   iniateChatConnect()
-    .then(() => (widgetIsLoaded.value = true))
+    .then(() => {
+      createInstance()
+      widgetIsLoaded.value = true
+    })
     .catch((err) => {})
 })
 </script>

@@ -8,7 +8,7 @@ customElements.define('curacom-plugin', CuracomPlugin)
 // createApp(App).mount('#app')
 
 const saveWidgetToken = () => {
-  let token: string = ''
+  let token: string = 'QdiR8tnXeZSbP2TIYCZNxzJi2ocKERdc'
 
   if (import.meta.env.MODE === 'production') {
     const widgetScript = document.querySelector(
