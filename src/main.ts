@@ -11,7 +11,7 @@ function loadCss() {
   const style = document.createElement('link')
   style.rel = 'stylesheet'
   style.type = 'text/css'
-  style.href = import.meta.env.APP_BASE_URL + '/assets/widget-index.css'
+  style.href = import.meta.env.VITE_BASE_URL + '/assets/widget-index.css'
   document.head.appendChild(style)
 }
 
