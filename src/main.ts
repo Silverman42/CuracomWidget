@@ -7,26 +7,24 @@ const CuracomPlugin = defineCustomElement(App)
 customElements.define('curacom-plugin', CuracomPlugin)
 // createApp(App).mount('#app')
 
-// const env = loadEnv('production', process.cwd())
+function loadCss() {
+  const style = document.createElement('link')
+  style.rel = 'stylesheet'
+  style.href = import.meta.env.BASE_URL + '/assets/widget-index.css'
+  document.head.appendChild(style)
+}
 
-// function loadCss() {
-//   const style = document.createElement('link')
-//   style.rel = 'stylesheet'
-//   style.href = env.BASE_URL + '/assets/widget-index.css'
-//   document.head.appendChild(style)
-// }
+function addPlugin() {
+  const body = document.querySelector('body')
+  const plugin = document.createElement('curacom-plugin')
+  body?.appendChild(plugin)
+}
 
-// function addPlugin() {
-//   const body = document.querySelector('body')
-//   const plugin = document.createElement('curacom-plugin')
-//   body?.appendChild(plugin)
-// }
+function prepareWidget() {
+  if (import.meta.env.ENV === 'production') {
+    loadCss()
+    addPlugin()
+  }
+}
 
-// function prepareWidget() {
-//   if (env.ENV === 'production') {
-//     loadCss()
-//     addPlugin()
-//   }
-// }
-
-// prepareWidget()
+prepareWidget()
