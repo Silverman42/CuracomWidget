@@ -1,4 +1,4 @@
-<script lang="ts">
+<script setup lang="ts">
 import { useConfigHandler } from '@/composables/config.handler'
 
 const { config } = useConfigHandler()
