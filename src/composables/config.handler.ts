@@ -3,6 +3,7 @@ import { ref } from 'vue'
 const config = ref({
   isOpen: false,
   newUserFormActive: false,
+  baseUrl: import.meta.env.VITE_BASE_URL,
 })
 export const useConfigHandler = () => {
   const action = {

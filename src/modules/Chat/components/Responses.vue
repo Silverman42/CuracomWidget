@@ -1,7 +1,12 @@
+<script lang="ts">
+import { useConfigHandler } from '@/composables/config.handler'
+
+const { config } = useConfigHandler()
+</script>
 <template>
   <li class="cura:flex cura:w-full cura:items-end cura:gap-3">
     <img
-      :src="'/img/avatar.svg'"
+      :src="`${config.baseUrl}/img/avatar.svg`"
       class="cura:w-[32px] cura:h-[32px] cura:rounded-full cura:shrink-0 cura:object-cover cura:object-center"
       alt=""
     />

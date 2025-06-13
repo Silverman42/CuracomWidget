@@ -7,7 +7,7 @@ import AppGroupSelectContainer from '@/components/App/GroupInput/Select.vue'
 import { useConfigHandler } from '@/composables/config.handler'
 import IconClose from '@/components/icons/IconClose.vue'
 
-const { closeChat, unsetNewUserForm } = useConfigHandler()
+const { closeChat, unsetNewUserForm, config } = useConfigHandler()
 </script>
 <template>
   <!-- user entry form end -->
@@ -21,7 +21,7 @@ const { closeChat, unsetNewUserForm } = useConfigHandler()
       :style="{ '--cura-header-bg': 'black' }"
     >
       <img
-        src="/img/cura_logo.svg"
+        :src="`${config.baseUrl}/img/cura_logo.svg`"
         class="cura:w-20 cura:h-10 cura:object-contain cura:object-center"
         alt=""
       />
