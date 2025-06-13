@@ -16,7 +16,7 @@ const handleNewChat = () => {
 </script>
 
 <template>
-  <div class="cura:w-svw cura:h-svh cura:bg-[#2927a9]">
+  <div class="">
     <Teleport to="body">
       <div
         class="cura:w-auto cura:h-auto cura:z-50 cura:fixed cura:font-body overflow-hidden"
