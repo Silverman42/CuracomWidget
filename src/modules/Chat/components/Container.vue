@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import IconAttachCircle from '@/components/icons/IconAttachCircle.vue'
+import IconClose from '@/components/icons/IconClose.vue'
 import IconMicrophone from '@/components/icons/IconMicrophone.vue'
 import IconSend from '@/components/icons/IconSend.vue'
 import IconSmiley from '@/components/icons/IconSmiley.vue'
+import { useConfigHandler } from '@/composables/config.handler'
 import ChatResponses from '@/modules/Chat/components/Responses.vue'
 import { ref } from 'vue'
 
 const starterText = ref('')
+const { closeChat } = useConfigHandler()
 </script>
 <template>
   <div
@@ -41,6 +44,7 @@ const starterText = ref('')
 
       <li class="cura:flex cura:gap-2 cura:shrink-0">
         <button
+          @click="closeChat"
           class="cura:bg-[#FB583A] cura:p-3 cura:px-4 cura:text-white cura:text-xs cura:flex cura:items-center cura:justify-center cura:rounded-[8px] cura:whitespace-nowrap"
         >
           End chat
@@ -51,7 +55,7 @@ const starterText = ref('')
 
     <!-- body -->
     <div
-      class="cura:p-4 cura:rounded-b-[20px] cura:bg-white cura:gap-3 cura:w-full cura:max-h-full cura:flex cura:flex-col"
+      class="cura:p-4 cura:bg-white cura:gap-3 cura:w-full cura:max-h-full cura:flex cura:flex-col cura:grow"
     >
       <p class="cura:text-right cura:text-[11px] cura:text-body-10 cura:shrink-0 cura:w-full">
         Business Messenger by
@@ -59,9 +63,9 @@ const starterText = ref('')
       </p>
 
       <!-- message -->
-      <ul
-        class="cura:flex cura:flex-col cura:w-full cura:gap-4 cura:h-[full] cura:max-h-[55%] cura:overflow-y-auto"
-      >
+      <ul class="cura:flex cura:flex-col cura:w-full cura:gap-4 cura:grow cura:overflow-y-auto">
+        <ChatResponses />
+        <ChatResponses />
         <ChatResponses />
         <ChatResponses />
         <ChatResponses />
@@ -70,7 +74,9 @@ const starterText = ref('')
       <!-- message end-->
 
       <!-- input -->
-      <div class="cura:flex cura:w-full cura:flex-col cura:gap-3 cura:shrink-0">
+      <div
+        class="cura:flex cura:w-full cura:flex-col cura:gap-3 cura:shrink-0 mt-auto cura:bg-white cura:mb-18"
+      >
         <ul class="flex items-center gap-2 overflow-x-auto pb-3">
           <!-- <li
             class="inline-block w-auto"
@@ -128,5 +134,13 @@ const starterText = ref('')
       <!-- input end-->
     </div>
     <!-- body end -->
+  </div>
+  <div class="cura:hidden cura:md:flex cura:justify-end cura:pt-5">
+    <button
+      @click="closeChat"
+      class="cura:w-[32px] cura:h-[32px] cura:text-black cura:bg-white cura:rounded-full cura:flex cura:items-center cura:justify-center"
+    >
+      <IconClose :size="20"></IconClose>
+    </button>
   </div>
 </template>

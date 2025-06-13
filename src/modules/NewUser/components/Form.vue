@@ -4,10 +4,15 @@ import AppButton from '@/components/App/Button.vue'
 import AppGroupInput from '@/components/App/GroupInput/Index.vue'
 import AppGroupInputContainer from '@/components/App/GroupInput/Input.vue'
 import AppGroupSelectContainer from '@/components/App/GroupInput/Select.vue'
+import { useConfigHandler } from '@/composables/config.handler'
+import IconClose from '@/components/icons/IconClose.vue'
+
+const { closeChat, unsetNewUserForm } = useConfigHandler()
 </script>
 <template>
   <!-- user entry form end -->
-  <div
+  <form
+    @submit.prevent="unsetNewUserForm"
     class="cura:h-svh cura:md:h-auto cura:md:min-h-[509px] cura:w-svw cura:md:w-[400px] cura:bg-white cura:border cura:border-[#EDEFF2] cura:overflow-hidden cura:md:rounded-[20px]"
   >
     <!-- head -->
@@ -63,6 +68,15 @@ import AppGroupSelectContainer from '@/components/App/GroupInput/Select.vue'
         Business Messenger by <strong class="cura:text-[#000001]">Curacom</strong>
       </p>
     </div>
-  </div>
+  </form>
   <!-- user entry form end -->
+
+  <div class="cura:hidden cura:md:flex cura:justify-end cura:pt-5">
+    <button
+      @click="closeChat"
+      class="cura:w-[32px] cura:h-[32px] cura:text-black cura:bg-white cura:rounded-full cura:flex cura:items-center cura:justify-center"
+    >
+      <IconClose :size="20"></IconClose>
+    </button>
+  </div>
 </template>

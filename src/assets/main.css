@@ -66,3 +66,47 @@
   --color-secondary-900: #050530;
   --color-secondary-950: #030318;
 }
+
+/* Transitions */
+.slideInRight-enter-active,
+.slideInRight-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slideInRight-enter-from,
+.slideInRight-leave-to {
+  opacity: 0;
+  transform: translateX(-80%);
+}
+
+.slideInLeft-enter-active,
+.slideInLeft-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slideInLeft-enter-from,
+.slideInLeft-leave-to {
+  opacity: 0;
+  transform: translateX(80%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.zoom-enter-active,
+.zoom-leave-active {
+  transition: all 0.1s ease;
+}
+
+.zoom-enter-from,
+.zoom-leave-to {
+  transform: scale(0.5, 0.5);
+}
+/* Transitions end*/

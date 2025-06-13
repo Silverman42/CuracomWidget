@@ -3,32 +3,56 @@ import { ref } from 'vue'
 import NewChatForm from '@/modules/NewUser/components/Form.vue'
 import ChatContainer from '@/modules/Chat/components/Container.vue'
 import IconNewChat from './components/icons/IconNewChat.vue'
+import { useConfigHandler } from './composables/config.handler'
 
 const chatIsOpen = ref(false)
+
+const { config, openChat, setNewUserForm } = useConfigHandler()
+
+const handleNewChat = () => {
+  setNewUserForm()
+  openChat()
+}
 </script>
 
 <template>
   <div class="cura:w-svw cura:h-svh cura:bg-[#2927a9]">
     <Teleport to="body">
       <div
-        class="cura:w-auto cura:h-auto cura:z-50 cura:fixed cura:bottom-4 cura:right-4 cura:font-body"
+        class="cura:w-auto cura:h-auto cura:z-50 cura:fixed cura:font-body overflow-hidden"
+        :class="{
+          'cura:bottom-0 cura:right-0 cura:md:bottom-4 cura:md:right-4 ': config.isOpen,
+          'cura:right-4 cura:bottom-4': !config.isOpen,
+        }"
       >
-        <!-- user entry form end -->
-        <!-- <NewChatForm></NewChatForm> -->
-        <!-- user entry form end -->
+        <Transition mode="out-in" name="zoom">
+          <template v-if="config.isOpen">
+            <Transition name="slideInRight" mode="out-in">
+              <!-- user entry form end -->
+              <div class="inline-block w-auto" v-if="config.newUserFormActive">
+                <NewChatForm></NewChatForm>
+              </div>
+              <!-- user entry form end -->
 
-        <!-- chat body -->
-        <ChatContainer></ChatContainer>
-        <!-- chat body -->
+              <!-- chat body -->
+              <div class="inline-block w-auto" v-else>
+                <ChatContainer></ChatContainer>
+              </div>
+              <!-- chat body -->
+            </Transition>
+          </template>
 
-        <!-- chat trigger button -->
-        <button
-          class="cura:w-18.5 cura:ml-auto cura:h-18.5 cura:rounded-full cura:bg-[var(--cura-open-chat-btn)] cura:flex cura:items-center cura:justify-center cura:cursor-pointer cura:text-white cura:hover:brightness-80"
-          :style="{ '--cura-open-chat-btn': '#6666FF' }"
-        >
-          <IconNewChat :size="36"></IconNewChat>
-        </button>
-        <!-- chat trigger button end-->
+          <!-- chat trigger button -->
+          <button
+            v-else
+            class="cura:w-18.5 cura:ml-auto cura:h-18.5 cura:rounded-full cura:bg-[var(--cura-open-chat-btn)] cura:flex cura:items-center cura:justify-center cura:cursor-pointer cura:text-white cura:hover:brightness-80"
+            @click="handleNewChat"
+            :style="{ '--cura-open-chat-btn': '#6666FF' }"
+          >
+            <IconNewChat :size="36"></IconNewChat>
+          </button>
+          <!-- chat trigger button end-->
+        </Transition>
       </div>
     </Teleport>
   </div>
