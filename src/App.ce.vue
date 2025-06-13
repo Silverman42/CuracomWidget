@@ -23,8 +23,8 @@ const handleNewChat = () => {
 
 onMounted(() => {
   iniateChatConnect()
-    .then(() => {
-      createInstance()
+    .then((response) => {
+      createInstance(response.data)
       widgetIsLoaded.value = true
     })
     .catch((err) => {})

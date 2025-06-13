@@ -1,3 +1,4 @@
+import type { IIdentifierResponse } from '@/utils/types/response/Initiator'
 import { createGlobalState } from '@vueuse/core'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
@@ -7,21 +8,24 @@ export const useWebSocketHandler = createGlobalState(() => {
   const socketInstance = ref<Echo<'reverb'> | null>(null)
 
   const actions = {
-    createInstance() {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      let { pusher } = window
-      pusher = Pusher
+    createInstance(identifierResponse: IIdentifierResponse) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        window.Pusher = Pusher
 
-      socketInstance.value = new Echo({
-        broadcaster: 'reverb',
-        key: import.meta.env.VITE_REVERB_APP_KEY,
-        wsHost: import.meta.env.VITE_REVERB_HOST,
-        wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
-        wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-        forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
-        enabledTransports: ['ws', 'wss'],
-      })
+        socketInstance.value = new Echo({
+          broadcaster: identifierResponse.websocket_config.broadcaster,
+          key: identifierResponse.websocket_config.key,
+          wsHost: identifierResponse.websocket_config.wsHost,
+          wsPort: identifierResponse.websocket_config.wsPort,
+          wssPort: identifierResponse.websocket_config.wssPort,
+          forceTLS: true,
+          enabledTransports: ['ws', 'wss'],
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
   }
 
