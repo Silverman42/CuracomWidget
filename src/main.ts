@@ -16,12 +16,12 @@ function loadCss() {
 }
 
 function addPlugin() {
-  const body = document.querySelector('body')
   const plugin = document.createElement('curacom-plugin')
-  body?.appendChild(plugin)
-}
 
-console.log(import.meta.env.VITE_BASE_URL)
+  document.body.appendChild(plugin)
+
+  console.log(plugin)
+}
 
 function prepareWidget() {
   if (import.meta.env.MODE === 'production') {
