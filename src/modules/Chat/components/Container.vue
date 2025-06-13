@@ -9,7 +9,7 @@ import ChatResponses from '@/modules/Chat/components/Responses.vue'
 import { ref } from 'vue'
 
 const starterText = ref('')
-const { closeChat } = useConfigHandler()
+const { closeChat, config } = useConfigHandler()
 </script>
 <template>
   <div
@@ -24,7 +24,7 @@ const { closeChat } = useConfigHandler()
     >
       <li class="cura:flex cura:items-center cura:gap-2 cura:w-full cura:overflow-hidden">
         <img
-          :src="'/img/avatar.svg'"
+          :src="`${config.baseUrl}/img/avatar.svg`"
           class="cura:w-10 cura:h-10 cura:rounded-full cura:object-cover cura:object-center"
           alt=""
         />
