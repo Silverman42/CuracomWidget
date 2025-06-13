@@ -135,12 +135,4 @@ const { closeChat, config } = useConfigHandler()
     </div>
     <!-- body end -->
   </div>
-  <div class="cura:hidden cura:md:flex cura:justify-end cura:pt-5">
-    <button
-      @click="closeChat"
-      class="cura:w-[32px] cura:h-[32px] cura:text-black cura:bg-white cura:rounded-full cura:flex cura:items-center cura:justify-center"
-    >
-      <IconClose :size="20"></IconClose>
-    </button>
-  </div>
 </template>

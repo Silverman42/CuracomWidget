@@ -7,7 +7,7 @@ import { useConfigHandler } from './composables/config.handler'
 
 const chatIsOpen = ref(false)
 
-const { config, openChat, setNewUserForm } = useConfigHandler()
+const { config, openChat, setNewUserForm, closeChat } = useConfigHandler()
 
 const handleNewChat = () => {
   setNewUserForm()
@@ -27,19 +27,30 @@ const handleNewChat = () => {
       >
         <Transition mode="out-in" name="zoom">
           <template v-if="config.isOpen">
-            <Transition name="slideInRight" mode="out-in">
-              <!-- user entry form end -->
-              <div class="inline-block w-auto" v-if="config.newUserFormActive">
-                <NewChatForm></NewChatForm>
-              </div>
-              <!-- user entry form end -->
+            <div>
+              <Transition name="slideInRight" mode="out-in">
+                <!-- user entry form end -->
+                <div class="inline-block w-auto" v-if="config.newUserFormActive">
+                  <NewChatForm></NewChatForm>
+                </div>
+                <!-- user entry form end -->
 
-              <!-- chat body -->
-              <div class="inline-block w-auto" v-else>
-                <ChatContainer></ChatContainer>
+                <!-- chat body -->
+                <div class="inline-block w-auto" v-else>
+                  <ChatContainer></ChatContainer>
+                </div>
+                <!-- chat body -->
+              </Transition>
+
+              <div class="cura:hidden cura:md:flex cura:justify-end cura:pt-5">
+                <button
+                  @click="closeChat"
+                  class="cura:w-[32px] cura:h-[32px] cura:text-black cura:bg-white cura:rounded-full cura:flex cura:items-center cura:justify-center cura:border cura:border-[#EDEFF2]"
+                >
+                  <IconClose :size="20"></IconClose>
+                </button>
               </div>
-              <!-- chat body -->
-            </Transition>
+            </div>
           </template>
 
           <!-- chat trigger button -->
