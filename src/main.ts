@@ -19,7 +19,8 @@ function addPlugin() {
   const plugin = document.createElement('curacom-plugin')
   body?.appendChild(plugin)
 }
-console.log(import.meta.env.BASE_URL)
+
+console.log(import.meta.env.MODE)
 
 function prepareWidget() {
   if (import.meta.env.ENV === 'production') {
