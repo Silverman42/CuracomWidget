@@ -20,10 +20,10 @@ function addPlugin() {
   body?.appendChild(plugin)
 }
 
-console.log(import.meta.env.MODE)
+// console.log(import.meta.env.MODE)
 
 function prepareWidget() {
-  if (import.meta.env.ENV === 'production') {
+  if (import.meta.env.MODE === 'production') {
     loadCss()
     addPlugin()
   }
