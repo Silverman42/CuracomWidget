@@ -1,0 +1,38 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, HEAD, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Content-Type = "text/css"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Content-Type = "application/javascript"
+
+[[headers]]
+  for = "/*.woff"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/*.otf"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/*.OTF"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
