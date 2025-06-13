@@ -10,6 +10,7 @@ customElements.define('curacom-plugin', CuracomPlugin)
 function loadCss() {
   const style = document.createElement('link')
   style.rel = 'stylesheet'
+  style.type = 'text/css'
   style.href = import.meta.env.APP_BASE_URL + '/assets/widget-index.css'
   document.head.appendChild(style)
 }
@@ -20,7 +21,7 @@ function addPlugin() {
   body?.appendChild(plugin)
 }
 
-console.log(import.meta.env.APP_BASE_URL)
+console.log(import.meta.env.VITE_BASE_URL)
 
 function prepareWidget() {
   if (import.meta.env.MODE === 'production') {
