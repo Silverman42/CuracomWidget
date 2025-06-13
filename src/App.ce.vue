@@ -20,7 +20,7 @@ const handleNewChat = () => {
   <div class="">
     <Teleport to="body">
       <div
-        class="cura:w-auto cura:h-auto cura:z-50 cura:fixed cura:font-body overflow-hidden"
+        class="cura:w-auto cura:h-auto cura:z-1000 cura:fixed cura:font-body overflow-hidden"
         :class="{
           'cura:bottom-0 cura:right-0 cura:md:bottom-4 cura:md:right-4 ': config.isOpen,
           'cura:right-4 cura:bottom-4': !config.isOpen,
