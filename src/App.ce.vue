@@ -1,25 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import NewChatForm from '@/modules/NewUser/components/Form.vue'
 import ChatContainer from '@/modules/Chat/components/Container.vue'
 import IconNewChat from './components/icons/IconNewChat.vue'
 import IconClose from '@/components/icons/IconClose.vue'
 import { useConfigHandler } from './composables/config.handler'
-
-const chatIsOpen = ref(false)
+import { useInitiatorStore } from './composables/initiator.store'
 
 const { config, openChat, setNewUserForm, closeChat } = useConfigHandler()
+
+const { iniateChatConnect } = useInitiatorStore()
+
+const widgetIsLoaded = ref(false)
 
 const handleNewChat = () => {
   setNewUserForm()
   openChat()
 }
+
+onMounted(() => {
+  iniateChatConnect()
+    .then(() => (widgetIsLoaded.value = true))
+    .catch((err) => {})
+})
 </script>
 
 <template>
   <div class="">
     <Teleport to="body">
       <div
+        v-if="widgetIsLoaded"
         class="cura:w-auto cura:h-auto cura:z-1000 cura:fixed cura:font-body overflow-hidden"
         :class="{
           'cura:bottom-0 cura:right-0 cura:md:bottom-4 cura:md:right-4 ': config.isOpen,

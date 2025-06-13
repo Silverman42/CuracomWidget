@@ -7,6 +7,22 @@ const CuracomPlugin = defineCustomElement(App)
 customElements.define('curacom-plugin', CuracomPlugin)
 // createApp(App).mount('#app')
 
+const saveWidgetToken = () => {
+  let token: string = ''
+
+  if (import.meta.env.MODE === 'production') {
+    const widgetScript = document.querySelector(
+      `#${import.meta.env.VITE_WIDGET_ID}`,
+    ) as HTMLScriptElement
+
+    const url = new URL(widgetScript?.src || '')
+
+    token = url.searchParams.get('id') || ''
+  }
+
+  window.localStorage.setItem(import.meta.env.VITE_WIDGET_ID, token)
+}
+
 function loadCss() {
   const style = document.createElement('link')
   style.rel = 'stylesheet'
@@ -22,6 +38,7 @@ function addPlugin() {
 }
 
 function prepareWidget() {
+  saveWidgetToken()
   if (import.meta.env.MODE === 'production') {
     loadCss()
     addPlugin()
