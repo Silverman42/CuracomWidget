@@ -18,9 +18,11 @@ function loadCss() {
 function addPlugin() {
   const plugin = document.createElement('curacom-plugin')
 
-  document.body.appendChild(plugin)
+  console.log(document.body)
 
   console.log(plugin)
+
+  document.body.appendChild(plugin)
 }
 
 function prepareWidget() {
