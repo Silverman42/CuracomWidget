@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import NewChatForm from '@/modules/NewUser/components/Form.vue'
 import ChatContainer from '@/modules/Chat/components/Container.vue'
 import IconNewChat from './components/icons/IconNewChat.vue'
+import IconClose from '@/components/icons/IconClose.vue'
 import { useConfigHandler } from './composables/config.handler'
 
 const chatIsOpen = ref(false)

@@ -5,7 +5,6 @@ import AppGroupInput from '@/components/App/GroupInput/Index.vue'
 import AppGroupInputContainer from '@/components/App/GroupInput/Input.vue'
 import AppGroupSelectContainer from '@/components/App/GroupInput/Select.vue'
 import { useConfigHandler } from '@/composables/config.handler'
-import IconClose from '@/components/icons/IconClose.vue'
 
 const { closeChat, unsetNewUserForm, config } = useConfigHandler()
 </script>
