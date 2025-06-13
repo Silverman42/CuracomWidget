@@ -1,0 +1,68 @@
+@import 'tailwindcss' prefix(cura);
+
+@font-face {
+  font-family: 'Sf Pro Display';
+  src: url('./fonts/sf-pro/SFPRODISPLAYREGULAR.OTF') format('opentype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Sf Pro Display';
+  src: url('./fonts/sf-pro/SFPRODISPLAYBOLD.OTF') format('opentype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Sf Pro Display';
+  src: url('./fonts/sf-pro/SFPRODISPLAYSEMIBOLDITALIC.OTF') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Sf Pro Display';
+  src: url('./fonts/sf-pro/SFPRODISPLAYMEDIUM.OTF') format('opentype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Sf Pro Display';
+  src: url('./fonts/sf-pro/SFPRODISPLAYBLACKITALIC.OTF') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+}
+
+@theme {
+  --font-body: 'Sf Pro Display';
+
+  --color-body-20: #555556;
+  --color-body-25: #2b2b2b;
+  --color-body-10: #aaaaaa;
+  --color-body-15: #808080;
+  --color-body-black: #000001;
+
+  --color-primary-50: #ececfe;
+  --color-primary-100: #d5d5fd;
+  --color-primary-200: #adadfb;
+  --color-primary-300: #8080f9;
+  --color-primary-400: #4d4df2;
+  --color-primary-500: #1010e8; /* Base color #1010E8 */
+  --color-primary-600: #0d0dba;
+  --color-primary-700: #0a0a8c;
+  --color-primary-800: #08085e;
+  --color-primary-900: #050530;
+  --color-primary-950: #030318;
+
+  --color-secondary: #1010e8; /* Base color #1010E8 */
+  --color-secondary-50: #ececfe;
+  --color-secondary-100: #d5d5fd;
+  --color-secondary-200: #adadfb;
+  --color-secondary-300: #8080f9;
+  --color-secondary-400: #4d4df2;
+  --color-secondary-500: #1010e8; /* Base color #1010E8 */
+  --color-secondary-600: #0d0dba;
+  --color-secondary-700: #0a0a8c;
+  --color-secondary-800: #08085e;
+  --color-secondary-900: #050530;
+  --color-secondary-950: #030318;
+}
