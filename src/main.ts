@@ -2,7 +2,6 @@ import './assets/main.css'
 
 import { createApp, defineCustomElement } from 'vue'
 import App from './App.ce.vue'
-import { loadEnv } from 'vite'
 
 const CuracomPlugin = defineCustomElement(App)
 customElements.define('curacom-plugin', CuracomPlugin)
