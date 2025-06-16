@@ -22,7 +22,16 @@ const handleNewChat = () => {
   openChat()
 }
 
-useUrlChangeHandler()
+const detectReplaceState = () => {
+  history.pushState = (...args) => {
+    const result = history.pushState.apply(history, args)
+    // handleUrlChange() // Check after state change
+    console.log('URL changed to:', location.href)
+    return result
+  }
+}
+
+detectReplaceState()
 
 onMounted(() => {
   iniateChatConnect()
