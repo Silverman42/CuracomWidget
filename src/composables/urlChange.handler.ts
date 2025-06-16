@@ -5,11 +5,11 @@ export const useUrlChangeHandler = (callback: Function = (currentUrl: string) =>
 
     console.log('URL changed to:', currentUrl)
 
-    if (currentUrl !== lastUrl) {
-      lastUrl = currentUrl
-      // TODO: Call your chat widget's URL update function here
-      callback(currentUrl)
-    }
+    // if (currentUrl !== lastUrl) {
+    //   lastUrl = currentUrl
+    //   // TODO: Call your chat widget's URL update function here
+    //   callback(currentUrl)
+    // }
   }
 
   history.pushState = (...args) => {
