@@ -22,6 +22,8 @@ const handleNewChat = () => {
   openChat()
 }
 
+useUrlChangeHandler()
+
 onMounted(() => {
   iniateChatConnect()
     .then((response) => {
@@ -29,8 +31,6 @@ onMounted(() => {
       widgetIsLoaded.value = true
     })
     .catch((err) => {})
-
-  useUrlChangeHandler()
 })
 </script>
 
