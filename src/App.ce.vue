@@ -24,11 +24,16 @@ const handleNewChat = () => {
 
 const detectReplaceState = () => {
   history.pushState = function (...args) {
-    // const result = history.pushState.apply(this, args)
-    // handleUrlChange() // Check after state change
-    console.log('URL changed to:', location.href)
-    // return result
+    console.log('PushState event detected. URL changed to:', location.href)
   }
+
+  window.addEventListener('popstate', () => {
+    console.log('Popstate event detected. URL changed to:', location.href)
+  })
+
+  window.addEventListener('hashchange', () => {
+    console.log('hashchange event detected. URL changed to:', location.href)
+  })
 }
 
 detectReplaceState()
