@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import NewChatForm from '@/modules/NewUser/components/Form.vue'
 import ChatContainer from '@/modules/Chat/components/Container.vue'
 import IconNewChat from './components/icons/IconNewChat.vue'
@@ -9,18 +9,28 @@ import { useInitiatorStore } from './composables/initiator.store'
 import { useWebSocketHandler } from './composables/websocket.handler'
 import { useUrlChangeHandler } from './composables/urlChange.handler'
 
-const { config, openChat, setNewUserForm, closeChat } = useConfigHandler()
+const { config, openChat, setNewUserForm, closeChat, unsetNewUserForm } = useConfigHandler()
 
-const { iniateChatConnect } = useInitiatorStore()
+const { iniateChatConnect, initiatorData } = useInitiatorStore()
 
-const { socketInstance, createInstance } = useWebSocketHandler()
+const { createInstance } = useWebSocketHandler()
 
 const widgetIsLoaded = ref(false)
 
+const checkForNewUser = () => {
+  if (customerIsNew.value) {
+    setNewUserForm()
+  }
+}
+
 const handleNewChat = () => {
-  setNewUserForm()
+  checkForNewUser()
   openChat()
 }
+
+const customerIsNew = computed(() => {
+  return initiatorData.value?.customer === null
+})
 
 const detectReplaceState = () => {
   history.pushState = function (...args) {
@@ -42,6 +52,7 @@ onMounted(() => {
   iniateChatConnect()
     .then((response) => {
       createInstance(response.data)
+      checkForNewUser()
       widgetIsLoaded.value = true
     })
     .catch((err) => {})

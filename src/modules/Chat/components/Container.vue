@@ -5,11 +5,16 @@ import IconMicrophone from '@/components/icons/IconMicrophone.vue'
 import IconSend from '@/components/icons/IconSend.vue'
 import IconSmiley from '@/components/icons/IconSmiley.vue'
 import { useConfigHandler } from '@/composables/config.handler'
+import { useInitiatorStore } from '@/composables/initiator.store'
 import ChatResponses from '@/modules/Chat/components/Responses.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const starterText = ref('')
 const { closeChat, config } = useConfigHandler()
+
+const { initiatorData } = useInitiatorStore()
+
+const chatHistory = computed(() => initiatorData.value?.customer?.history || [])
 </script>
 <template>
   <div
@@ -64,18 +69,13 @@ const { closeChat, config } = useConfigHandler()
 
       <!-- message -->
       <ul class="cura:flex cura:flex-col cura:w-full cura:gap-4 cura:grow cura:overflow-y-auto">
-        <ChatResponses />
-        <ChatResponses />
-        <ChatResponses />
-        <ChatResponses />
-        <ChatResponses />
-        <ChatResponses />
+        <ChatResponses v-for="responder in chatHistory" :responder="responder" />
       </ul>
       <!-- message end-->
 
       <!-- input -->
       <div
-        class="cura:flex cura:w-full cura:flex-col cura:gap-3 cura:shrink-0 mt-auto cura:bg-white cura:mb-18"
+        class="cura:flex cura:w-full cura:flex-col cura:gap-3 cura:shrink-0 mt-auto cura:bg-white"
       >
         <ul class="flex items-center gap-2 overflow-x-auto pb-3">
           <!-- <li

@@ -5,13 +5,91 @@ import AppGroupInput from '@/components/App/GroupInput/Index.vue'
 import AppGroupInputContainer from '@/components/App/GroupInput/Input.vue'
 import AppGroupSelectContainer from '@/components/App/GroupInput/Select.vue'
 import { useConfigHandler } from '@/composables/config.handler'
+import { computed, reactive } from 'vue'
+import { helpers, maxLength, minLength, required, requiredIf } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
+import { useInitiatorStore } from '@/composables/initiator.store'
+import type { ICountryPhoneCode } from '@/utils/types/response/Initiator'
+import { useNewUserStore } from '../composables/useNewUser.store'
 
-const { closeChat, unsetNewUserForm, config } = useConfigHandler()
+const { unsetNewUserForm, config } = useConfigHandler()
+
+const { initiatorData } = useInitiatorStore()
+
+const { createNewUser, creatingNewUser } = useNewUserStore()
+
+const payload = reactive({
+  name: '',
+  email: '',
+  dial_code: '',
+  phone: '',
+})
+
+const phoneNumberParams = reactive({
+  flag: '',
+  code: '',
+  number_length: 0,
+})
+
+const countries = computed(() => {
+  return initiatorData.value?.countries || []
+})
+
+const validations = computed(() => {
+  return {
+    name: {
+      required: helpers.withMessage('Name is required', required),
+    },
+    email: {
+      required: helpers.withMessage('Email is required', required),
+      email: helpers.withMessage('Invalid email', required),
+    },
+    phone: {
+      requiredIf: helpers.withMessage(
+        'Phone number is required',
+        requiredIf(() => phoneNumberParams.number_length > 0),
+      ),
+      minLength: helpers.withMessage(
+        'Phone number length must be ' + phoneNumberParams.number_length + ' digits',
+        minLength(phoneNumberParams.number_length),
+      ),
+      maxLength: helpers.withMessage(
+        'Phone number length must be ' + phoneNumberParams.number_length + ' digits',
+        maxLength(phoneNumberParams.number_length),
+      ),
+    },
+  }
+})
+
+const v$ = useVuelidate(validations, payload)
+
+const setCountryParams = (country: ICountryPhoneCode) => {
+  phoneNumberParams.flag = country.flag
+  phoneNumberParams.code = country.dial_code
+  phoneNumberParams.number_length = country.phone_number_length
+}
+
+const handleSelectCountry = (event: Event) => {
+  const val = event.target as HTMLSelectElement
+  const country = countries.value.find((country) => country.dial_code === val.value)
+  setCountryParams(country as ICountryPhoneCode)
+}
+
+const handleNewChat = () => {
+  v$.value.$validate()
+  if (!v$.value.$error) {
+    createNewUser(payload)
+      .then(() => {
+        unsetNewUserForm()
+      })
+      .catch((err) => {})
+  }
+}
 </script>
 <template>
   <!-- user entry form end -->
   <form
-    @submit.prevent="unsetNewUserForm"
+    @submit.prevent="handleNewChat"
     class="cura:h-svh cura:md:h-auto cura:md:min-h-[509px] cura:w-svw cura:md:w-[400px] cura:bg-white cura:border cura:border-[#EDEFF2] cura:overflow-hidden cura:md:rounded-[20px]"
   >
     <!-- head -->
@@ -32,35 +110,69 @@ const { closeChat, unsetNewUserForm, config } = useConfigHandler()
         Kindly provide your contact information to continue
       </h1>
 
-      <AppInputContainer label="Email address">
-        <input placeholder="example@email.com" type="email" />
+      <AppInputContainer
+        label="Email address"
+        :error="v$.email?.$errors![0]?.$message.toString() || ''"
+      >
+        <input
+          placeholder="example@email.com"
+          v-model="payload.email"
+          @input="v$.email.$touch"
+          type="email"
+        />
       </AppInputContainer>
 
-      <AppInputContainer label="Full Name">
-        <input placeholder="Enter full name" type="text" />
+      <AppInputContainer :error="v$.name?.$errors![0]?.$message.toString() || ''" label="Full Name">
+        <input
+          placeholder="Enter full name"
+          v-model="payload.name"
+          @input="v$.name.$touch"
+          type="text"
+        />
       </AppInputContainer>
 
       <div>
-        <AppGroupInput label="Phone Number" :leftWidth="30" :rightWidth="70">
+        <AppGroupInput
+          :error="v$.phone?.$errors![0]?.$message.toString() || ''"
+          label="Phone Number"
+          :leftWidth="40"
+          :rightWidth="60"
+        >
           <template v-slot:left>
             <div class="cura:w-full">
               <AppGroupSelectContainer>
-                <select>
-                  <option>+234</option>
+                <select
+                  @change="handleSelectCountry($event)"
+                  v-model="payload.dial_code"
+                  class="cura:w-full"
+                >
+                  <option
+                    class="cura:uppercase"
+                    v-for="country in countries"
+                    :value="country.dial_code"
+                  >
+                    {{ country.dial_code }} ({{
+                      payload.dial_code === country.dial_code ? country.iso_code : country.name
+                    }})
+                  </option>
                 </select>
               </AppGroupSelectContainer>
             </div>
           </template>
           <template v-slot:right>
             <div class="cura:w-full">
-              <AppGroupInputContainer></AppGroupInputContainer>
+              <AppGroupInputContainer
+                @input="v$.phone.$touch"
+                :type="'tel'"
+                v-model="payload.phone"
+              ></AppGroupInputContainer>
             </div>
           </template>
         </AppGroupInput>
       </div>
 
       <div class="cura:pt-4">
-        <AppButton :block="true">Submit</AppButton>
+        <AppButton :loading="creatingNewUser" :block="true">Submit</AppButton>
       </div>
 
       <p class="cura:text-[#AAAAAA] cura:text-[11px] cura:text-center">

@@ -1,5 +1,21 @@
+<script lang="ts" setup>
+const value = defineModel({
+  type: String,
+  required: true,
+  default: '',
+})
+
+const props = withDefaults(
+  defineProps<{
+    type?: string
+  }>(),
+  {
+    type: 'text',
+  },
+)
+</script>
 <template>
-  <input class="input" type="text" />
+  <input class="input cura:appearance-none" v-model="value" :type="props.type" />
 </template>
 <style lang="css" scoped>
 @reference "@/assets/main.css";

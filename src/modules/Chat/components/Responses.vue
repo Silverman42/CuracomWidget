@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { useConfigHandler } from '@/composables/config.handler'
+import type { IChatHistory } from '@/utils/types/response/Initiator'
 
 const { config } = useConfigHandler()
+
+const props = withDefaults(defineProps<{ responder: IChatHistory | null }>(), {
+  responder: null,
+})
 </script>
 <template>
   <li class="cura:flex cura:w-full cura:items-end cura:gap-3">
     <img
-      :src="`${config.baseUrl}/img/avatar.svg`"
+      :src="props.responder?.avatar || `${config.baseUrl}/img/avatar.svg`"
       class="cura:w-[32px] cura:h-[32px] cura:rounded-full cura:shrink-0 cura:object-cover cura:object-center"
       alt=""
     />
@@ -18,13 +23,13 @@ const { config } = useConfigHandler()
           '--client-message-color': '#EDEFF2',
         }"
       >
-        <p class="cura:mb-3">Hey 👋</p>
         <p>
-          This is what the chat widget looks like to a customer on your website, please fill in the
-          required fields to continue.
+          {{ props.responder?.body }}
         </p>
       </blockquote>
-      <time class="cura:text-xs cura:text-body-15 cura:block cura:mt-2"> 10:12 AM </time>
+      <time class="cura:text-xs cura:text-body-15 cura:block cura:mt-2">
+        {{ props.responder?.time }}
+      </time>
     </div>
   </li>
 </template>

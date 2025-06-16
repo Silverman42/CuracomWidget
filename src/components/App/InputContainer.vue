@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
+
 interface ContainerProps {
   label?: string
   error?: string
@@ -7,6 +8,7 @@ interface ContainerProps {
   prefix?: string
   isPassword?: boolean
   note?: string
+  type?: string
 }
 const containerProps = withDefaults(defineProps<ContainerProps>(), {
   label: '',
@@ -36,10 +38,6 @@ const toggglePasswordVisibility = () => {
         {{ containerProps.prefix }}
       </span>
       <slot :passwordIsVisible="passwordIsVisible"> </slot>
-      <span v-if="isPassword" class="password-hide" @click="toggglePasswordVisibility">
-        <icon v-if="passwordIsVisible" name="fluent:eye-show-20-regular" size="1.6rem" />
-        <icon v-else name="fluent:eye-hide-20-regular" size="1.6rem" />
-      </span>
     </div>
     <span class="error">{{ requestError }}</span>
     <span
