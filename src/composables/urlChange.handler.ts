@@ -12,17 +12,17 @@ export const useUrlChangeHandler = (callback: Function = (currentUrl: string) =>
     // }
   }
 
-  history.pushState = (...args) => {
-    const result = history.pushState.apply(history, args)
-    handleUrlChange() // Check after state change
-    return result
-  }
+  // history.pushState = (...args) => {
+  //   const result = history.pushState.apply(history, args)
+  //   handleUrlChange() // Check after state change
+  //   return result
+  // }
 
-  history.replaceState = (...args) => {
-    const result = history.replaceState.apply(history, args)
-    handleUrlChange() // Check after state change
-    return result
-  }
+  // history.replaceState = (...args) => {
+  //   const result = history.replaceState.apply(history, args)
+  //   handleUrlChange() // Check after state change
+  //   return result
+  // }
 
   // patchHistoryMethod('pushState')
   // patchHistoryMethod('replaceState')
