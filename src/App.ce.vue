@@ -7,6 +7,7 @@ import IconClose from '@/components/icons/IconClose.vue'
 import { useConfigHandler } from './composables/config.handler'
 import { useInitiatorStore } from './composables/initiator.store'
 import { useWebSocketHandler } from './composables/websocket.handler'
+import { useUrlChangeHandler } from './composables/urlChange.handler'
 
 const { config, openChat, setNewUserForm, closeChat } = useConfigHandler()
 
@@ -28,6 +29,8 @@ onMounted(() => {
       widgetIsLoaded.value = true
     })
     .catch((err) => {})
+
+  useUrlChangeHandler()
 })
 </script>
 
