@@ -24,10 +24,10 @@ const handleNewChat = () => {
 
 const detectReplaceState = () => {
   history.pushState = function (...args) {
-    const result = history.pushState.apply(this, args)
+    // const result = history.pushState.apply(this, args)
     // handleUrlChange() // Check after state change
     console.log('URL changed to:', location.href)
-    return result
+    // return result
   }
 }
 
