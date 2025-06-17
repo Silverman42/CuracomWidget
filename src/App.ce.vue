@@ -45,17 +45,17 @@ const handlePageLogging = () => {
 
 const detectReplaceState = () => {
   history.pushState = function (...args) {
-    handlePageLogging()
+    // handlePageLogging()
     console.log('PushState event detected. URL changed to:', location.href)
   }
 
   window.addEventListener('popstate', () => {
-    handlePageLogging()
+    // handlePageLogging()
     console.log('Popstate event detected. URL changed to:', location.href)
   })
 
   window.addEventListener('hashchange', () => {
-    handlePageLogging()
+    // handlePageLogging()
     console.log('hashchange event detected. URL changed to:', location.href)
   })
 }
