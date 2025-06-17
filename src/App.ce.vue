@@ -8,6 +8,8 @@ import { useConfigHandler } from './composables/config.handler'
 import { useInitiatorStore } from './composables/initiator.store'
 import { useWebSocketHandler } from './composables/websocket.handler'
 import { useUrlChangeHandler } from './composables/urlChange.handler'
+import { useLogPageStore } from './composables/logPage.store'
+import { set } from '@vueuse/core'
 
 const { config, openChat, setNewUserForm, closeChat, unsetNewUserForm } = useConfigHandler()
 
@@ -16,6 +18,8 @@ const { iniateChatConnect, initiatorData } = useInitiatorStore()
 const { createInstance } = useWebSocketHandler()
 
 const widgetIsLoaded = ref(false)
+
+const { setLogPagePayload, logPageVisit, logPagePayload } = useLogPageStore()
 
 const checkForNewUser = () => {
   if (customerIsNew.value) {
@@ -32,16 +36,26 @@ const customerIsNew = computed(() => {
   return initiatorData.value?.customer === null
 })
 
+const handlePageLogging = () => {
+  if (logPagePayload.value.url !== window.location.href) {
+    setLogPagePayload()
+    logPageVisit().catch(() => {})
+  }
+}
+
 const detectReplaceState = () => {
   history.pushState = function (...args) {
+    handlePageLogging()
     console.log('PushState event detected. URL changed to:', location.href)
   }
 
   window.addEventListener('popstate', () => {
+    handlePageLogging()
     console.log('Popstate event detected. URL changed to:', location.href)
   })
 
   window.addEventListener('hashchange', () => {
+    handlePageLogging()
     console.log('hashchange event detected. URL changed to:', location.href)
   })
 }
@@ -51,6 +65,7 @@ detectReplaceState()
 onMounted(() => {
   iniateChatConnect()
     .then((response) => {
+      handlePageLogging()
       createInstance(response.data)
       checkForNewUser()
       widgetIsLoaded.value = true

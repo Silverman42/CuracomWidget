@@ -2,11 +2,13 @@ import { ApiClient } from '@/utils/helpers/ApiClient'
 import { ApiRoutes } from '@/utils/helpers/ApiRoutes'
 import type { IResponse } from '@/utils/types/response/global'
 import type { IIdentifierResponse } from '@/utils/types/response/Initiator'
+import { createGlobalState } from '@vueuse/core'
 import { AxiosError } from 'axios'
 import { ref } from 'vue'
 
-const initiatorData = ref<IIdentifierResponse>()
-export const useInitiatorStore = () => {
+export const useInitiatorStore = createGlobalState(() => {
+  const initiatorData = ref<IIdentifierResponse>()
+
   const action = {
     async iniateChatConnect() {
       try {
@@ -28,4 +30,4 @@ export const useInitiatorStore = () => {
     initiatorData,
     ...action,
   }
-}
+})
