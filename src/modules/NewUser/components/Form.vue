@@ -15,7 +15,7 @@ import { useChatStore } from '@/modules/Chat/composables/chat.store'
 
 const { unsetNewUserForm, config } = useConfigHandler()
 
-const { initiatorData } = useInitiatorStore()
+const { initiatorData, updateCustomer } = useInitiatorStore()
 
 const { createNewUser, creatingNewUser } = useNewUserStore()
 
@@ -84,6 +84,7 @@ const handleNewChat = () => {
     createNewUser(payload)
       .then((res) => {
         appendManyToQueue(res.data.customer.history || []).then(() => {
+          updateCustomer(res.data.customer)
           unsetNewUserForm()
         })
       })

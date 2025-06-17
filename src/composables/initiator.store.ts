@@ -1,13 +1,17 @@
 import { ApiClient } from '@/utils/helpers/ApiClient'
 import { ApiRoutes } from '@/utils/helpers/ApiRoutes'
 import type { IResponse } from '@/utils/types/response/global'
-import type { IIdentifierResponse } from '@/utils/types/response/Initiator'
+import type { ICustomer, IIdentifierResponse } from '@/utils/types/response/Initiator'
 import { createGlobalState } from '@vueuse/core'
 import { AxiosError } from 'axios'
 import { ref } from 'vue'
 
 export const useInitiatorStore = createGlobalState(() => {
-  const initiatorData = ref<IIdentifierResponse>()
+  const initiatorData = ref<IIdentifierResponse>({
+    customer: null,
+    countries: null,
+    websocket_config: null,
+  })
 
   const action = {
     async iniateChatConnect() {
@@ -22,6 +26,10 @@ export const useInitiatorStore = createGlobalState(() => {
         window.localStorage.removeItem(import.meta.env.VITE_WIDGET_ID)
         throw error
       }
+    },
+
+    updateCustomer(data: ICustomer) {
+      initiatorData.value.customer = data
     },
   }
 

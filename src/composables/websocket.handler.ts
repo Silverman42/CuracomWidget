@@ -15,11 +15,11 @@ export const useWebSocketHandler = createGlobalState(() => {
         window.Pusher = Pusher
 
         socketInstance.value = new Echo({
-          broadcaster: identifierResponse.websocket_config.broadcaster,
-          key: identifierResponse.websocket_config.key,
-          wsHost: identifierResponse.websocket_config.wsHost,
-          wsPort: identifierResponse.websocket_config.wsPort,
-          wssPort: identifierResponse.websocket_config.wssPort,
+          broadcaster: identifierResponse?.websocket_config?.broadcaster || 'reverb',
+          key: identifierResponse?.websocket_config?.key,
+          wsHost: identifierResponse?.websocket_config?.wsHost,
+          wsPort: identifierResponse?.websocket_config?.wsPort,
+          wssPort: identifierResponse?.websocket_config?.wssPort,
           forceTLS: true,
           enabledTransports: ['ws', 'wss'],
         })

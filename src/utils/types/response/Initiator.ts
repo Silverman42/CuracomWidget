@@ -1,7 +1,7 @@
 export interface IIdentifierResponse {
-  websocket_config: WebsocketConfig
+  websocket_config: null | WebsocketConfig
   customer: null | ICustomer
-  countries: ICountryPhoneCode[]
+  countries: null | ICountryPhoneCode[]
 }
 
 export interface WebsocketConfig {
