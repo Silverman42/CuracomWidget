@@ -10,6 +10,7 @@ import { useWebSocketHandler } from './composables/websocket.handler'
 import { useUrlChangeHandler } from './composables/urlChange.handler'
 import { useLogPageStore } from './composables/logPage.store'
 import { set } from '@vueuse/core'
+import { useChatStore } from './modules/Chat/composables/chat.store'
 
 const { config, openChat, setNewUserForm, closeChat, unsetNewUserForm } = useConfigHandler()
 
@@ -20,6 +21,8 @@ const { createInstance } = useWebSocketHandler()
 const widgetIsLoaded = ref(false)
 
 const { setLogPagePayload, logPageVisit, logPagePayload } = useLogPageStore()
+
+const { appendManyToQueue } = useChatStore()
 
 const checkForNewUser = () => {
   if (customerIsNew.value) {
@@ -64,10 +67,11 @@ detectReplaceState()
 
 onMounted(() => {
   iniateChatConnect()
-    .then((response) => {
+    .then(async (response) => {
       handlePageLogging()
-      createInstance(response.data)
-      checkForNewUser()
+      await createInstance(response.data)
+      await appendManyToQueue(response.data?.customer?.history || [])
+      await checkForNewUser()
       widgetIsLoaded.value = true
     })
     .catch((err) => {})

@@ -36,12 +36,12 @@ export interface IChatHistory {
   avatar: string
 }
 
-enum SenderType {
+export enum SenderType {
   CUSTOMER = 'customer',
   AGENT = 'agent',
 }
 
-enum MessageType {
+export enum MessageType {
   TEXT = 'text',
   VOICE = 'voice',
   IMAGE = 'image',

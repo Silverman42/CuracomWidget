@@ -5,16 +5,44 @@ import IconMicrophone from '@/components/icons/IconMicrophone.vue'
 import IconSend from '@/components/icons/IconSend.vue'
 import IconSmiley from '@/components/icons/IconSmiley.vue'
 import { useConfigHandler } from '@/composables/config.handler'
-import { useInitiatorStore } from '@/composables/initiator.store'
 import ChatResponses from '@/modules/Chat/components/Responses.vue'
-import { computed, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useChatStore } from '../composables/chat.store'
+import IconLoading from '@/components/icons/IconLoading.vue'
 
-const starterText = ref('')
+const { sendMessage, sendingMessage, chatQueue, appendSingleToQueue } = useChatStore()
+
 const { closeChat, config } = useConfigHandler()
 
-const { initiatorData } = useInitiatorStore()
+const chatHistory = computed(() => chatQueue.value || [])
 
-const chatHistory = computed(() => initiatorData.value?.customer?.history || [])
+const messageContainer = ref<HTMLUListElement | null>(null)
+
+const payload = reactive({
+  body: '',
+})
+
+const scrollToBottom = () => {
+  if (messageContainer.value) {
+    messageContainer.value.scrollTop =
+      messageContainer.value.scrollTop + messageContainer.value.scrollHeight
+  }
+}
+
+const handleChatSend = () => {
+  sendMessage(payload)
+    .then((res) => {
+      payload.body = ''
+      appendSingleToQueue(res.data.data).then(() => {
+        scrollToBottom()
+      })
+    })
+    .catch(() => {})
+}
+
+onMounted(() => {
+  scrollToBottom()
+})
 </script>
 <template>
   <div
@@ -60,7 +88,7 @@ const chatHistory = computed(() => initiatorData.value?.customer?.history || [])
 
     <!-- body -->
     <div
-      class="cura:p-4 cura:bg-white cura:gap-3 cura:w-full cura:max-h-full cura:flex cura:flex-col cura:grow"
+      class="cura:p-4 cura:bg-white cura:gap-3 cura:w-full cura:h-[91%] cura:md:h-[88.5%] cura:flex cura:flex-col cura:grow-0 cura:relative"
     >
       <p class="cura:text-right cura:text-[11px] cura:text-body-10 cura:shrink-0 cura:w-full">
         Business Messenger by
@@ -68,14 +96,17 @@ const chatHistory = computed(() => initiatorData.value?.customer?.history || [])
       </p>
 
       <!-- message -->
-      <ul class="cura:flex cura:flex-col cura:w-full cura:gap-4 cura:grow cura:overflow-y-auto">
+      <ul
+        class="cura:flex cura:flex-col cura:w-full cura:gap-4 cura:overflow-y-auto cura:bg-white/50 cura:pb-43 cura:scroll-smooth"
+        ref="messageContainer"
+      >
         <ChatResponses v-for="responder in chatHistory" :responder="responder" />
       </ul>
       <!-- message end-->
 
       <!-- input -->
       <div
-        class="cura:flex cura:w-full cura:flex-col cura:gap-3 cura:shrink-0 mt-auto cura:bg-white"
+        class="cura:flex cura:w-full cura:flex-col cura:gap-3 cura:shrink-0 mt-auto cura:bg-white cura:absolute cura:bottom-0 cura:left-0 cura:right-0 cura:p-4 z-3"
       >
         <ul class="flex items-center gap-2 overflow-x-auto pb-3">
           <!-- <li
@@ -99,14 +130,16 @@ const chatHistory = computed(() => initiatorData.value?.customer?.history || [])
             class="cura:border-0 cura:w-full cura:outline-none cura:peer cura:relative cura:z-[3] cura:placeholder:text-[#CCCCCC]"
             placeholder="Type something"
             id=""
-            v-model="starterText"
+            v-model="payload.body"
           ></textarea>
 
           <div
             class="cura:absolute cura:w-full cura:h-full cura:top-0 cura:left-0 cura:border cura:border-[#C1C3D2] cura:rounded-[8.3px] cura:peer-focus:border-primary-500 cura:transition-all cura:duration-300 cura:ease-in-out"
           ></div>
 
-          <ul class="cura:w-full cura:flex cura:items-center cura:justify-between cura:grow">
+          <ul
+            class="cura:w-full cura:flex cura:items-center cura:justify-between cura:grow cura:relative cura:z-8"
+          >
             <li class="cura:flex cura:items-center cura:gap-2">
               <button class="cura:text-body-15 cura:hover:text-black cura:cursor-pointer">
                 <IconSmiley :size="20.8"></IconSmiley>
@@ -120,12 +153,15 @@ const chatHistory = computed(() => initiatorData.value?.customer?.history || [])
             </li>
             <li class="cura:shrink-0">
               <button
-                class="cura:w-[40px] cura:h-[40px] cura:flex cura:items-center cura:justify-center cura:bg-[var(--chat-send-button-color)] cura:text-white cura:rounded-full"
+                class="cura:w-[40px] cura:h-[40px] cura:flex cura:items-center cura:justify-center cura:bg-[var(--chat-send-button-color)] cura:text-white cura:rounded-full cura:cursor-pointer cura:disabled:opacity-50"
+                @click="handleChatSend"
+                :disabled="sendingMessage || payload.body.length <= 0"
                 :style="{
                   '--chat-send-button-color': 'black',
                 }"
               >
-                <IconSend :size="19.2"></IconSend>
+                <IconSend v-if="!sendingMessage" :size="19.2"></IconSend>
+                <IconLoading :size="19.2" v-else></IconLoading>
               </button>
             </li>
           </ul>
