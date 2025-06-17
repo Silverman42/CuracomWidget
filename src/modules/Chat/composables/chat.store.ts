@@ -40,8 +40,9 @@ export const useChatStore = createGlobalState(() => {
       chatQueue.value = []
     },
 
-    appendManyToQueue(payload: IChatHistory[]) {
-      chatQueue.value.push(...payload)
+    async appendManyToQueue(payload: IChatHistory[]) {
+      await chatQueue.value.push(...payload)
+      return
     },
   }
 

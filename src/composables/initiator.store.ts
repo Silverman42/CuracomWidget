@@ -19,8 +19,7 @@ export const useInitiatorStore = createGlobalState(() => {
         return data
       } catch (error) {
         const err = error as AxiosError
-
-        // window.localStorage.removeItem(import.meta.env.VITE_WIDGET_ID)
+        window.localStorage.removeItem(import.meta.env.VITE_WIDGET_ID)
         throw error
       }
     },

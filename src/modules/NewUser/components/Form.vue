@@ -11,6 +11,7 @@ import useVuelidate from '@vuelidate/core'
 import { useInitiatorStore } from '@/composables/initiator.store'
 import type { ICountryPhoneCode } from '@/utils/types/response/Initiator'
 import { useNewUserStore } from '../composables/useNewUser.store'
+import { useChatStore } from '@/modules/Chat/composables/chat.store'
 
 const { unsetNewUserForm, config } = useConfigHandler()
 
@@ -30,6 +31,8 @@ const phoneNumberParams = reactive({
   code: '',
   number_length: 0,
 })
+
+const { appendManyToQueue } = useChatStore()
 
 const countries = computed(() => {
   return initiatorData.value?.countries || []
@@ -79,8 +82,10 @@ const handleNewChat = () => {
   v$.value.$validate()
   if (!v$.value.$error) {
     createNewUser(payload)
-      .then(() => {
-        unsetNewUserForm()
+      .then((res) => {
+        appendManyToQueue(res.data.customer.history || []).then(() => {
+          unsetNewUserForm()
+        })
       })
       .catch((err) => {})
   }

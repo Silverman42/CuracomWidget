@@ -1,9 +1,19 @@
 import { ApiClient } from '@/utils/helpers/ApiClient'
 import { ApiRoutes } from '@/utils/helpers/ApiRoutes'
 import type { IResponse } from '@/utils/types/response/global'
+import type { IChatHistory } from '@/utils/types/response/Initiator'
 import { createGlobalState } from '@vueuse/core'
 import type { AxiosError } from 'axios'
 import { reactive, ref } from 'vue'
+
+export interface INewUserResponse {
+  customer: Customer
+}
+
+export interface Customer {
+  uid: string
+  history: IChatHistory[]
+}
 
 export const useNewUserStore = createGlobalState(() => {
   const creatingNewUser = ref(false)
@@ -17,7 +27,10 @@ export const useNewUserStore = createGlobalState(() => {
     }) {
       creatingNewUser.value = true
       try {
-        const { data } = await ApiClient().post<IResponse>(ApiRoutes.VISITOR_IDENTIFY, payload)
+        const { data } = await ApiClient().post<IResponse<INewUserResponse>>(
+          ApiRoutes.VISITOR_IDENTIFY,
+          payload,
+        )
         creatingNewUser.value = false
         return data
       } catch (error) {
