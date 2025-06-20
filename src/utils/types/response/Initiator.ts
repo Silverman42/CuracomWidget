@@ -12,6 +12,7 @@ export interface WebsocketConfig {
   wssPort: number
   forceTLS: boolean
   enabledTransports: string[]
+  authEndpoint: string
 }
 
 export interface ICustomer {

@@ -47,20 +47,18 @@ const handlePageLogging = () => {
 }
 
 const detectReplaceState = () => {
-  history.pushState = function (...args) {
-    // handlePageLogging()
-    console.log('PushState event detected. URL changed to:', location.href)
-  }
-
-  window.addEventListener('popstate', () => {
-    // handlePageLogging()
-    console.log('Popstate event detected. URL changed to:', location.href)
-  })
-
-  window.addEventListener('hashchange', () => {
-    // handlePageLogging()
-    console.log('hashchange event detected. URL changed to:', location.href)
-  })
+  // history.pushState = function (...args) {
+  //   // handlePageLogging()
+  //   console.log('PushState event detected. URL changed to:', location.href)
+  // }
+  // window.addEventListener('popstate', () => {
+  //   // handlePageLogging()
+  //   console.log('Popstate event detected. URL changed to:', location.href)
+  // })
+  // window.addEventListener('hashchange', () => {
+  //   // handlePageLogging()
+  //   console.log('hashchange event detected. URL changed to:', location.href)
+  // })
 }
 
 detectReplaceState()

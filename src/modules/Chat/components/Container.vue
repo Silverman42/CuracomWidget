@@ -10,7 +10,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useChatStore } from '../composables/chat.store'
 import IconLoading from '@/components/icons/IconLoading.vue'
 
-const { sendMessage, sendingMessage, chatQueue, appendSingleToQueue } = useChatStore()
+const { sendMessage, sendingMessage, chatQueue, appendSingleToQueue, joinChat } = useChatStore()
 
 const { closeChat, config } = useConfigHandler()
 
@@ -42,6 +42,7 @@ const handleChatSend = () => {
 
 onMounted(() => {
   scrollToBottom()
+  joinChat()
 })
 </script>
 <template>

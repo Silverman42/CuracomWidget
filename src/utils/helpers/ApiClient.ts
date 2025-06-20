@@ -1,3 +1,4 @@
+import { useWebSocketHandler } from '@/composables/websocket.handler'
 import axios from 'axios'
 
 export const ApiClient = () => {
@@ -7,6 +8,8 @@ export const ApiClient = () => {
       'X-Curacom-Widget': window.localStorage.getItem(import.meta.env.VITE_WIDGET_ID) || 'None',
       'Content-Type': 'application/json',
       Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      'X-Socket-ID': useWebSocketHandler()?.socketInstance?.value?.socketId() || '',
     },
     withCredentials: true,
   })

@@ -1,3 +1,5 @@
+import { useInitiatorStore } from '@/composables/initiator.store'
+import { useWebSocketHandler } from '@/composables/websocket.handler'
 import { ApiClient } from '@/utils/helpers/ApiClient'
 import { ApiRoutes } from '@/utils/helpers/ApiRoutes'
 import type { IResponse } from '@/utils/types/response/global'
@@ -43,6 +45,17 @@ export const useChatStore = createGlobalState(() => {
     async appendManyToQueue(payload: IChatHistory[]) {
       await chatQueue.value.push(...payload)
       return
+    },
+
+    joinChat() {
+      useWebSocketHandler()
+        .socketInstance.value?.join(`chat.${useInitiatorStore().initiatorData.value.customer?.uid}`)
+        .listen('.new-messsage', (e: any) => {
+          console.log(e)
+        })
+        .error((e: any) => {
+          console.log(e)
+        })
     },
   }
 
