@@ -20,7 +20,6 @@ export const useWebSocketHandler = createGlobalState(() => {
           wsHost: identifierResponse?.websocket_config?.wsHost,
           wsPort: identifierResponse?.websocket_config?.wsPort,
           wssPort: identifierResponse?.websocket_config?.wssPort,
-          withCredentials: true,
           forceTLS: true,
           authEndpoint: identifierResponse?.websocket_config?.authEndpoint,
           enabledTransports: ['ws', 'wss'],
@@ -28,6 +27,7 @@ export const useWebSocketHandler = createGlobalState(() => {
             headers: {
               'X-Curacom-Widget':
                 window.localStorage.getItem(import.meta.env.VITE_WIDGET_ID) || 'None',
+              'X-Curacom-Cookie': identifierResponse?.customer?.uid || '',
             },
           },
         })

@@ -18,6 +18,7 @@ export interface WebsocketConfig {
 export interface ICustomer {
   uid: string
   history: IChatHistory[]
+  chat_uid: string
 }
 
 export interface ICountryPhoneCode {

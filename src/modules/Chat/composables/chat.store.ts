@@ -49,8 +49,10 @@ export const useChatStore = createGlobalState(() => {
 
     joinChat() {
       useWebSocketHandler()
-        .socketInstance.value?.join(`chat.${useInitiatorStore().initiatorData.value.customer?.uid}`)
-        .listen('.new-messsage', (e: any) => {
+        .socketInstance.value?.join(
+          `chat.${useInitiatorStore().initiatorData.value.customer?.chat_uid}`,
+        )
+        .listen('MessageSent', (e: any) => {
           console.log(e)
         })
         .error((e: any) => {
