@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import NewChatForm from '@/modules/NewUser/components/Form.vue'
 import ChatContainer from '@/modules/Chat/components/Container.vue'
 import IconNewChat from './components/icons/IconNewChat.vue'
@@ -66,13 +66,17 @@ detectReplaceState()
 onMounted(() => {
   iniateChatConnect()
     .then(async (response) => {
-      handlePageLogging()
+      // handlePageLogging()
       await createInstance(response.data)
       await appendManyToQueue(response.data?.customer?.history || [])
       await checkForNewUser()
       widgetIsLoaded.value = true
     })
     .catch((err) => {})
+})
+
+onUnmounted(() => {
+  useWebSocketHandler().disconnect()
 })
 </script>
 

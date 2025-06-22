@@ -1,11 +1,14 @@
+import { createGlobalState } from '@vueuse/core'
 import { ref } from 'vue'
 
-const config = ref({
-  isOpen: false,
-  newUserFormActive: false,
-  baseUrl: import.meta.env.VITE_BASE_URL,
-})
-export const useConfigHandler = () => {
+export const useConfigHandler = createGlobalState(() => {
+  const config = ref({
+    isOpen: false,
+    newUserFormActive: false,
+    baseUrl: import.meta.env.VITE_BASE_URL,
+    envIsProduction: import.meta.env.MODE === 'production',
+  })
+
   const action = {
     openChat() {
       config.value.isOpen = true
@@ -26,4 +29,4 @@ export const useConfigHandler = () => {
     config,
     ...action,
   }
-}
+})

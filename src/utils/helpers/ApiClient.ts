@@ -2,14 +2,23 @@ import { useWebSocketHandler } from '@/composables/websocket.handler'
 import axios from 'axios'
 
 export const ApiClient = () => {
+  const customHeaders: {
+    [key: string]: string
+  } = {}
+
+  customHeaders[import.meta.env.VITE_X_CURACOM_WIDGET_HEADER] =
+    window.localStorage.getItem(import.meta.env.VITE_WIDGET_ID) || 'None'
+
+  customHeaders[import.meta.env.VITE_X_SOCKET_ID_HEADER] =
+    useWebSocketHandler()?.socketInstance?.value?.socketId() || ''
+
   const client = axios.create({
     baseURL: import.meta.env.VITE_BASE_API_URL,
     headers: {
-      'X-Curacom-Widget': window.localStorage.getItem(import.meta.env.VITE_WIDGET_ID) || 'None',
       'Content-Type': 'application/json',
       Accept: 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
-      'X-Socket-ID': useWebSocketHandler()?.socketInstance?.value?.socketId() || '',
+      ...customHeaders,
     },
     withCredentials: true,
   })

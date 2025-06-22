@@ -4,6 +4,12 @@ export interface IIdentifierResponse {
   countries: null | ICountryPhoneCode[]
 }
 
+export interface IAgent {
+  name: string
+  title: string
+  avatar: string
+}
+
 export interface WebsocketConfig {
   broadcaster: 'reverb'
   key: string
@@ -19,6 +25,7 @@ export interface ICustomer {
   uid: string
   history: IChatHistory[]
   chat_uid: string
+  agent: null | IAgent
 }
 
 export interface ICountryPhoneCode {

@@ -7,12 +7,22 @@ import { ref } from 'vue'
 export const useWebSocketHandler = createGlobalState(() => {
   const socketInstance = ref<Echo<'reverb'> | null>(null)
 
+  const customHeaders: {
+    [key: string]: string
+  } = {}
+
   const actions = {
     createInstance(identifierResponse: IIdentifierResponse) {
       try {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         window.Pusher = Pusher
+
+        customHeaders[import.meta.env.VITE_X_CURACOM_WIDGET_HEADER] =
+          window.localStorage.getItem(import.meta.env.VITE_WIDGET_ID) || 'None'
+
+        customHeaders[import.meta.env.VITE_X_CURACOM_COOKIE_HEADER] =
+          identifierResponse?.customer?.uid || ''
 
         socketInstance.value = new Echo({
           broadcaster: identifierResponse?.websocket_config?.broadcaster || 'reverb',
@@ -24,14 +34,14 @@ export const useWebSocketHandler = createGlobalState(() => {
           authEndpoint: identifierResponse?.websocket_config?.authEndpoint,
           enabledTransports: ['ws', 'wss'],
           auth: {
-            headers: {
-              'X-Curacom-Widget':
-                window.localStorage.getItem(import.meta.env.VITE_WIDGET_ID) || 'None',
-              'X-Curacom-Cookie': identifierResponse?.customer?.uid || '',
-            },
+            headers: customHeaders,
           },
         })
       } catch (error) {}
+    },
+
+    disconnect() {
+      socketInstance.value?.disconnect()
     },
   }
 

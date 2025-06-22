@@ -1,18 +1,27 @@
 <script setup lang="ts">
 import IconAttachCircle from '@/components/icons/IconAttachCircle.vue'
-import IconClose from '@/components/icons/IconClose.vue'
 import IconMicrophone from '@/components/icons/IconMicrophone.vue'
 import IconSend from '@/components/icons/IconSend.vue'
 import IconSmiley from '@/components/icons/IconSmiley.vue'
 import { useConfigHandler } from '@/composables/config.handler'
 import ChatResponses from '@/modules/Chat/components/Responses.vue'
+import ChatHeader from '@/modules/Chat/components/Header.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useChatStore } from '../composables/chat.store'
 import IconLoading from '@/components/icons/IconLoading.vue'
+import IconMesssage from '@/components/icons/IconMesssage.vue'
 
-const { sendMessage, sendingMessage, chatQueue, appendSingleToQueue, joinChat } = useChatStore()
+const {
+  sendMessage,
+  sendingMessage,
+  chatQueue,
+  appendSingleToQueue,
+  listenAndJoin,
+  triggerAgentmessage,
+  sendingAgentMessage,
+} = useChatStore()
 
-const { closeChat, config } = useConfigHandler()
+const { config } = useConfigHandler()
 
 const chatHistory = computed(() => chatQueue.value || [])
 
@@ -29,6 +38,20 @@ const scrollToBottom = () => {
   }
 }
 
+const getMessageContainer = () => {
+  messageContainer.value = document.querySelector('#messageContainer')
+}
+
+const handleAgentMessage = () => {
+  triggerAgentmessage({
+    body: payload.body,
+  })
+    .then((res) => {
+      payload.body = ''
+    })
+    .catch(() => {})
+}
+
 const handleChatSend = () => {
   sendMessage(payload)
     .then((res) => {
@@ -41,8 +64,14 @@ const handleChatSend = () => {
 }
 
 onMounted(() => {
+  getMessageContainer()
   scrollToBottom()
-  joinChat()
+  listenAndJoin(
+    (e) => {
+      scrollToBottom()
+    },
+    () => {},
+  )
 })
 </script>
 <template>
@@ -50,41 +79,7 @@ onMounted(() => {
     class="cura:h-svh cura:md:h-[643px] cura:flex cura:flex-col cura:w-svw cura:md:w-[400px] cura:bg-white cura:border cura:border-[#EDEFF2] cura:overflow-hidden cura:md:rounded-[20px]"
   >
     <!-- heading -->
-    <ul
-      class="cura:bg-[var(--chat-window-color)] cura:p-4 cura:flex cura:items-center cura:justify-between cura:w-full cura:gap-3"
-      :style="{
-        '--chat-window-color': 'black',
-      }"
-    >
-      <li class="cura:flex cura:items-center cura:gap-2 cura:w-full cura:overflow-hidden">
-        <img
-          :src="`${config.baseUrl}/img/avatar.svg`"
-          class="cura:w-10 cura:h-10 cura:rounded-full cura:object-cover cura:object-center"
-          alt=""
-        />
-        <div class="cura:w-full cura:overflow-hidden">
-          <h2
-            class="cura:text-white cura:font-medium cura:whitespace-nowrap cura:text-ellipsis cura:text-sm cura:md:text-base cura:w-full cura:overflow-hidden"
-          >
-            Charles Joe
-          </h2>
-          <p
-            class="cura:text-xs cura:text-white/50 cura:whitespace-nowrap cura:text-ellipsis cura:w-full cura:overflow-hidden"
-          >
-            Admin
-          </p>
-        </div>
-      </li>
-
-      <li class="cura:flex cura:gap-2 cura:shrink-0">
-        <button
-          @click="closeChat"
-          class="cura:bg-[#FB583A] cura:p-3 cura:px-4 cura:text-white cura:text-xs cura:flex cura:items-center cura:justify-center cura:rounded-[8px] cura:whitespace-nowrap"
-        >
-          End chat
-        </button>
-      </li>
-    </ul>
+    <ChatHeader></ChatHeader>
     <!-- heading end-->
 
     <!-- body -->
@@ -99,7 +94,7 @@ onMounted(() => {
       <!-- message -->
       <ul
         class="cura:flex cura:flex-col cura:w-full cura:gap-4 cura:overflow-y-auto cura:bg-white/50 cura:pb-43 cura:scroll-smooth"
-        ref="messageContainer"
+        id="messageContainer"
       >
         <ChatResponses v-for="responder in chatHistory" :responder="responder" />
       </ul>
@@ -152,7 +147,23 @@ onMounted(() => {
                 <IconMicrophone :size="20.8"></IconMicrophone>
               </button>
             </li>
-            <li class="cura:shrink-0">
+            <li class="cura:shrink-0 cura:flex cura:items-center cura:gap-2">
+              <!-- agent button -->
+              <button
+                v-if="!config.envIsProduction"
+                class="cura:w-[40px] cura:h-[40px] cura:flex cura:items-center cura:justify-center cura:bg-[var(--chat-send-button-color)] cura:text-white cura:rounded-full cura:cursor-pointer cura:disabled:opacity-50"
+                @click="handleAgentMessage"
+                :disabled="sendingAgentMessage"
+                :style="{
+                  '--chat-send-button-color': 'black',
+                }"
+              >
+                <IconMesssage v-if="!sendingAgentMessage" :size="19.2"></IconMesssage>
+                <IconLoading :size="19.2" v-else></IconLoading>
+              </button>
+              <!-- agent button end-->
+
+              <!-- Customer button -->
               <button
                 class="cura:w-[40px] cura:h-[40px] cura:flex cura:items-center cura:justify-center cura:bg-[var(--chat-send-button-color)] cura:text-white cura:rounded-full cura:cursor-pointer cura:disabled:opacity-50"
                 @click="handleChatSend"
@@ -164,6 +175,7 @@ onMounted(() => {
                 <IconSend v-if="!sendingMessage" :size="19.2"></IconSend>
                 <IconLoading :size="19.2" v-else></IconLoading>
               </button>
+              <!-- Customer button end-->
             </li>
           </ul>
         </div>
