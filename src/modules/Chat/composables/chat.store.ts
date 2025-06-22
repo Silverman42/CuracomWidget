@@ -6,6 +6,7 @@ import { TestApiClient } from '@/utils/helpers/TestApiClient'
 import type { IResponse } from '@/utils/types/response/global'
 import type { IChatHistory } from '@/utils/types/response/Initiator'
 import { createGlobalState } from '@vueuse/core'
+import type { Broadcaster } from 'laravel-echo'
 import { ref } from 'vue'
 
 export const useChatStore = createGlobalState(() => {
@@ -14,6 +15,8 @@ export const useChatStore = createGlobalState(() => {
   const sendingAgentMessage = ref(false)
 
   const chatQueue = ref<IChatHistory[]>([])
+
+  const channelInstance = ref<Broadcaster['reverb']['presence'] | null>(null)
 
   const action = {
     async sendMessage(payload: { body?: string; media?: File }) {
@@ -42,6 +45,7 @@ export const useChatStore = createGlobalState(() => {
         const { data } = await TestApiClient().post<IResponse<IChatHistory>>(
           ApiRoutes.CHAT_TRIGGER_AGENT_MESSAGE(
             useInitiatorStore().initiatorData.value.customer?.chat_uid || '',
+            // '6cf1cbe8-f592-46df-9e40-5ff3784c67fc',
           ),
           payload,
         )
@@ -67,25 +71,43 @@ export const useChatStore = createGlobalState(() => {
       return
     },
 
-    listenAndJoin(successCallback: (e: IChatHistory) => void, errorCallback: (e: any) => void) {
-      return useWebSocketHandler()
-        .socketInstance.value?.join(
+    joinChat() {
+      channelInstance.value =
+        useWebSocketHandler().socketInstance.value?.join(
           `chat.${useInitiatorStore().initiatorData.value.customer?.chat_uid}`,
-        )
-        .listen('MessageSent', (e: IChatHistory) => {
-          action.appendSingleToQueue(e).then(() => {
-            successCallback(e)
-          })
-        })
-        .error((e: any) => {
-          errorCallback(e)
-        })
+        ) || null
     },
 
-    joinChat() {
-      return useWebSocketHandler().socketInstance.value?.join(
-        `chat.${useInitiatorStore().initiatorData.value.customer?.chat_uid}`,
-      )
+    listenForNewMessage(
+      successCallback: (e: IChatHistory) => void,
+      errorCallback: (e: any) => void,
+    ) {
+      channelInstance.value?.listen('MessageSent', (e: IChatHistory) => {
+        action.appendSingleToQueue(e).then(() => {
+          successCallback(e)
+        })
+      })
+      channelInstance.value?.error((e: any) => {
+        errorCallback(e)
+      })
+    },
+
+    whisperKeyPress() {
+      channelInstance.value?.whisper('typing', {
+        name: 'Customer',
+      })
+    },
+
+    listenForAgentWhisper(
+      successCallback: (e: IChatHistory) => void,
+      errorCallback: (e: any) => void,
+    ) {
+      channelInstance.value?.listenForWhisper('typing', (e: any) => {
+        successCallback(e)
+      })
+      channelInstance.value?.error((e: any) => {
+        errorCallback(e)
+      })
     },
   }
 
@@ -93,6 +115,7 @@ export const useChatStore = createGlobalState(() => {
     sendingMessage,
     sendingAgentMessage,
     chatQueue,
+    channelInstance,
     ...action,
   }
 })

@@ -6,6 +6,7 @@ import IconSmiley from '@/components/icons/IconSmiley.vue'
 import { useConfigHandler } from '@/composables/config.handler'
 import ChatResponses from '@/modules/Chat/components/Responses.vue'
 import ChatHeader from '@/modules/Chat/components/Header.vue'
+import ChatTypingSignal from '@/modules/Chat/components/TypingSignal.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useChatStore } from '../composables/chat.store'
 import IconLoading from '@/components/icons/IconLoading.vue'
@@ -16,9 +17,12 @@ const {
   sendingMessage,
   chatQueue,
   appendSingleToQueue,
-  listenAndJoin,
+  joinChat,
+  listenForNewMessage,
   triggerAgentmessage,
   sendingAgentMessage,
+  whisperKeyPress,
+  listenForAgentWhisper,
 } = useChatStore()
 
 const { config } = useConfigHandler()
@@ -30,6 +34,19 @@ const messageContainer = ref<HTMLUListElement | null>(null)
 const payload = reactive({
   body: '',
 })
+
+const agentTyping = {
+  isActive: ref(false),
+  timeout: ref(0),
+}
+
+const triggerAgentTypingSignal = () => {
+  agentTyping.isActive.value = true
+  clearTimeout(agentTyping.timeout.value)
+  agentTyping.timeout.value = setTimeout(() => {
+    agentTyping.isActive.value = false
+  }, 3000)
+}
 
 const scrollToBottom = () => {
   if (messageContainer.value) {
@@ -52,6 +69,10 @@ const handleAgentMessage = () => {
     .catch(() => {})
 }
 
+const handleChatKeyPress = (e: KeyboardEvent) => {
+  whisperKeyPress()
+}
+
 const handleChatSend = () => {
   sendMessage(payload)
     .then((res) => {
@@ -65,10 +86,22 @@ const handleChatSend = () => {
 
 onMounted(() => {
   getMessageContainer()
+
   scrollToBottom()
-  listenAndJoin(
+
+  joinChat()
+
+  listenForNewMessage(
     (e) => {
       scrollToBottom()
+    },
+    () => {},
+  )
+
+  listenForAgentWhisper(
+    (e) => {
+      scrollToBottom()
+      triggerAgentTypingSignal()
     },
     () => {},
   )
@@ -97,6 +130,9 @@ onMounted(() => {
         id="messageContainer"
       >
         <ChatResponses v-for="responder in chatHistory" :responder="responder" />
+        <Transition name="zoom">
+          <ChatTypingSignal v-if="agentTyping.isActive.value" />
+        </Transition>
       </ul>
       <!-- message end-->
 
@@ -123,6 +159,7 @@ onMounted(() => {
             name=""
             rows="3"
             style="resize: none"
+            @keydown.enter="handleChatKeyPress"
             class="cura:border-0 cura:w-full cura:outline-none cura:peer cura:relative cura:z-[3] cura:placeholder:text-[#CCCCCC]"
             placeholder="Type something"
             id=""

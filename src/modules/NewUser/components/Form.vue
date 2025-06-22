@@ -42,6 +42,9 @@ const validations = computed(() => {
   return {
     name: {
       required: helpers.withMessage('Name is required', required),
+      hasMultipleNames: helpers.withMessage('Please enter your first name and last name', () =>
+        payload.name.includes(' '),
+      ),
     },
     email: {
       required: helpers.withMessage('Email is required', required),
