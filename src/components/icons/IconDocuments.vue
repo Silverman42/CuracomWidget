@@ -1,0 +1,41 @@
+<script setup lang="ts">
+const props = defineProps<{ size: number }>()
+</script>
+<template>
+  <svg
+    :width="props.size"
+    :height="props.size"
+    viewBox="0 0 16 17"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M14.6654 7.01058V10.3439C14.6654 13.6772 13.332 15.0106 9.9987 15.0106H5.9987C2.66536 15.0106 1.33203 13.6772 1.33203 10.3439V6.34391C1.33203 3.01058 2.66536 1.67725 5.9987 1.67725H9.33203"
+      stroke="currentColor"
+      stroke-width="0.96"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M14.6654 7.01058H11.9987C9.9987 7.01058 9.33203 6.34391 9.33203 4.34391V1.67725L14.6654 7.01058Z"
+      stroke="currentColor"
+      stroke-width="0.96"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M4.66797 9.01123H8.66797"
+      stroke="currentColor"
+      stroke-width="0.96"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M4.66797 11.6772H7.33464"
+      stroke="currentColor"
+      stroke-width="0.96"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</template>

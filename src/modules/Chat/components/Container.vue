@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import IconAttachCircle from '@/components/icons/IconAttachCircle.vue'
 import IconMicrophone from '@/components/icons/IconMicrophone.vue'
 import IconSend from '@/components/icons/IconSend.vue'
 import IconSmiley from '@/components/icons/IconSmiley.vue'
 import { useConfigHandler } from '@/composables/config.handler'
 import ChatResponses from '@/modules/Chat/components/Responses.vue'
 import ChatHeader from '@/modules/Chat/components/Header.vue'
+import ChatFileUploader from '@/modules/Chat/components/FileUploader.vue'
 import ChatTypingSignal from '@/modules/Chat/components/TypingSignal.vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useChatStore } from '../composables/chat.store'
 import IconLoading from '@/components/icons/IconLoading.vue'
 import IconMesssage from '@/components/icons/IconMesssage.vue'
+import ChatFileDetails from '@/modules/Chat/components/FileDetails.vue'
 
 const {
   sendMessage,
@@ -31,14 +32,31 @@ const chatHistory = computed(() => chatQueue.value || [])
 
 const messageContainer = ref<HTMLUListElement | null>(null)
 
-const payload = reactive({
+const fileUploaderComp = ref<InstanceType<typeof ChatFileUploader> | null>(null)
+
+const submissionError = {
+  status: ref(false),
+  message: ref(''),
+}
+
+const payload = reactive<{
+  body: string
+  media: File | null
+}>({
   body: '',
+  media: null,
 })
+
+const showFileDetails = ref(false)
 
 const agentTyping = {
   isActive: ref(false),
   timeout: ref(0),
 }
+
+const disableCustomerSendButton = computed(() => {
+  return sendingMessage.value || payload.body.length <= 0
+})
 
 const triggerAgentTypingSignal = () => {
   agentTyping.isActive.value = true
@@ -46,6 +64,38 @@ const triggerAgentTypingSignal = () => {
   agentTyping.timeout.value = setTimeout(() => {
     agentTyping.isActive.value = false
   }, 3000)
+}
+
+const handleFileSelection = (file: File) => {
+  const fileIsValid = checkFileValidity(file)
+  if (fileIsValid.status) {
+    showFileDetails.value = true
+    payload.media = file
+  }
+}
+
+const closeFileDetails = () => {
+  showFileDetails.value = false
+  payload.media = null
+}
+
+const checkFileValidity = (file: File | null) => {
+  if (!file) {
+    return {
+      status: false,
+      message: 'No file selected',
+    }
+  }
+  if (file.size > config.value.maxFileSize) {
+    return {
+      status: false,
+      message: 'File size is too large',
+    }
+  }
+  return {
+    status: true,
+    message: '',
+  }
 }
 
 const scrollToBottom = () => {
@@ -78,10 +128,15 @@ const handleChatSend = () => {
     .then((res) => {
       payload.body = ''
       appendSingleToQueue(res.data.data).then(() => {
+        closeFileDetails()
         scrollToBottom()
       })
     })
     .catch(() => {})
+}
+
+const closeDialogueBoxes = (e: MouseEvent) => {
+  fileUploaderComp.value?.handleOutsideClick(e)
 }
 
 onMounted(() => {
@@ -109,7 +164,9 @@ onMounted(() => {
 </script>
 <template>
   <div
-    class="cura:h-svh cura:md:h-[643px] cura:flex cura:flex-col cura:w-svw cura:md:w-[400px] cura:bg-white cura:border cura:border-[#EDEFF2] cura:overflow-hidden cura:md:rounded-[20px]"
+    class="cura:h-svh cura:md:h-[643px] cura:flex cura:flex-col cura:w-svw cura:md:w-[400px] cura:bg-white cura:border cura:border-[#EDEFF2] cura:overflow-hidden cura:md:rounded-[20px] cura:relative"
+    @click="closeDialogueBoxes($event)"
+    id="cura-message-container"
   >
     <!-- heading -->
     <ChatHeader></ChatHeader>
@@ -155,6 +212,16 @@ onMounted(() => {
         </ul>
 
         <div class="cura:relative cura:rounded-[8.3px] cura:p-3">
+          <!-- file viewer -->
+          <Transition name="zoom">
+            <ChatFileDetails
+              @closeFileDetail="closeFileDetails"
+              v-if="showFileDetails"
+              :media="payload.media"
+            ></ChatFileDetails>
+          </Transition>
+          <!-- file viewer end-->
+
           <textarea
             name=""
             rows="3"
@@ -174,15 +241,20 @@ onMounted(() => {
             class="cura:w-full cura:flex cura:items-center cura:justify-between cura:grow cura:relative cura:z-8"
           >
             <li class="cura:flex cura:items-center cura:gap-2">
-              <button class="cura:text-body-15 cura:hover:text-black cura:cursor-pointer">
+              <!-- file uploader -->
+              <ChatFileUploader
+                @file-selected="handleFileSelection($event)"
+                ref="fileUploaderComp"
+              ></ChatFileUploader>
+              <!-- file uploader end -->
+
+              <!-- <button class="cura:text-body-15 cura:hover:text-black cura:cursor-pointer">
                 <IconSmiley :size="20.8"></IconSmiley>
-              </button>
-              <button class="cura:text-body-15 cura:hover:text-black cura:cursor-pointer">
-                <IconAttachCircle :size="20.8"></IconAttachCircle>
-              </button>
-              <button class="cura:text-body-15 cura:hover:text-black cura:cursor-pointer">
+              </button> -->
+
+              <!-- <button class="cura:text-body-15 cura:hover:text-black cura:cursor-pointer">
                 <IconMicrophone :size="20.8"></IconMicrophone>
-              </button>
+              </button> -->
             </li>
             <li class="cura:shrink-0 cura:flex cura:items-center cura:gap-2">
               <!-- agent button -->
@@ -204,7 +276,7 @@ onMounted(() => {
               <button
                 class="cura:w-[40px] cura:h-[40px] cura:flex cura:items-center cura:justify-center cura:bg-[var(--chat-send-button-color)] cura:text-white cura:rounded-full cura:cursor-pointer cura:disabled:opacity-50"
                 @click="handleChatSend"
-                :disabled="sendingMessage || payload.body.length <= 0"
+                :disabled="disableCustomerSendButton"
                 :style="{
                   '--chat-send-button-color': 'black',
                 }"

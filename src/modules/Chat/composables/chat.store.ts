@@ -19,7 +19,7 @@ export const useChatStore = createGlobalState(() => {
   const channelInstance = ref<Broadcaster['reverb']['presence'] | null>(null)
 
   const action = {
-    async sendMessage(payload: { body?: string; media?: File }) {
+    async sendMessage(payload: { body?: string; media?: File | null }) {
       sendingMessage.value = true
       try {
         const data = await ApiClient().post<IResponse<IChatHistory>>(

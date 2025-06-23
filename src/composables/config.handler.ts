@@ -7,6 +7,7 @@ export const useConfigHandler = createGlobalState(() => {
     newUserFormActive: false,
     baseUrl: import.meta.env.VITE_BASE_URL,
     envIsProduction: import.meta.env.MODE === 'production',
+    maxFileSize: 6000000, // 6mb
   })
 
   const action = {
