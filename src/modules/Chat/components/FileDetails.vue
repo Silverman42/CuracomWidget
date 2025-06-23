@@ -1,11 +1,18 @@
 <script lang="ts" setup>
 import IconDocuments from '@/components/icons/IconDocuments.vue'
 import IconClose from '@/components/icons/IconClose.vue'
+import { computed } from 'vue'
 
-const props = withDefaults(defineProps<{ media?: File | null; type?: 'doc' | 'img' }>(), {
-  media: null,
-  type: 'doc',
-})
+const props = withDefaults(
+  defineProps<{ media?: File | null; type?: 'doc' | 'img'; loading?: boolean }>(),
+  {
+    media: null,
+    type: 'doc',
+    loading: false,
+  },
+)
+
+const uploading = computed(() => props.loading)
 
 const formatFileSize = (size: number) => {
   if (size < 1024) {
@@ -19,7 +26,7 @@ const formatFileSize = (size: number) => {
 </script>
 <template>
   <div
-    class="cura:relative cura:z-10 cura:border cura:border-[#C1C3D2] cura:rounded-[8.3px] cura:p-3 cura:mb-3 cura:bg-white cura:flex cura:gap-2 cura:items-center cura:overflow-hidden"
+    class="cura:relative cura:z-3 cura:border cura:border-[#C1C3D2] cura:rounded-[8.3px] cura:p-3 cura:mb-3 cura:bg-white cura:flex cura:gap-2 cura:items-center cura:overflow-hidden"
   >
     <i
       class="cura:text-[var(--text-color)]"
@@ -40,7 +47,8 @@ const formatFileSize = (size: number) => {
     </div>
 
     <button
-      class="cura:flex cura:ml-auto cura:w-[22px] cura:h-[22px] cura:items-center cura:justify-center cura:text-body-15 cura:hover:text-[#000001] cura:rounded-full cura:border cura:border-body-15 cura:cursor-pointer"
+      class="cura:flex cura:shrink-0 cura:ml-auto cura:w-[22px] cura:h-[22px] cura:items-center cura:justify-center cura:text-body-15 cura:hover:text-[#000001] cura:rounded-full cura:border cura:border-body-15 cura:cursor-pointer"
+      v-if="!uploading"
       @click="$emit('closeFileDetail')"
     >
       <IconClose :size="16"></IconClose>

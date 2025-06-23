@@ -38,7 +38,7 @@ export interface ICountryPhoneCode {
 
 export interface IChatHistory {
   body: string
-  media: null
+  media: null | string
   type: MessageType
   sender: SenderType
   time: string

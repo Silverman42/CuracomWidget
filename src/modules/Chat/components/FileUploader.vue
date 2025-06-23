@@ -34,9 +34,13 @@ const toggleFileSelect = () => {
   fileSelectOpen.value = !fileSelectOpen.value
 }
 
-const handleFileSelect = (e: Event) => {
+const handleFileSelect = (e: Event, type: 'img' | 'doc' = 'doc') => {
   const file = (e.target as HTMLInputElement).files?.[0]
-  file && emits('fileSelected', file)
+  file &&
+    emits('fileSelected', {
+      file,
+      type,
+    })
 }
 
 defineExpose({
@@ -44,7 +48,10 @@ defineExpose({
 })
 </script>
 <template>
-  <div ref="optionSelector" class="cura:inline-block cura:h-[22px] cura:relative cura:w-auto">
+  <div
+    ref="optionSelector"
+    class="cura:inline-block cura:h-[22px] cura:relative cura:w-auto cura:z-40"
+  >
     <Transition name="zoom" mode="out-in">
       <ul
         v-if="fileSelectOpen"
@@ -61,7 +68,7 @@ defineExpose({
             <input
               type="file"
               name=""
-              @change="handleFileSelect($event)"
+              @change="handleFileSelect($event, 'img')"
               accept=".jpg,.png,.wav"
               class="cura:sr-only"
               id="photo-upload"
@@ -84,7 +91,7 @@ defineExpose({
             <input
               type="file"
               name=""
-              @change="handleFileSelect($event)"
+              @change="handleFileSelect($event, 'doc')"
               accept=".jpg,.pdf,.png,.csv,.wav,.docx,.mp3"
               class="cura:sr-only"
               id="document-upload"

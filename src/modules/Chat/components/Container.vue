@@ -12,6 +12,7 @@ import { useChatStore } from '../composables/chat.store'
 import IconLoading from '@/components/icons/IconLoading.vue'
 import IconMesssage from '@/components/icons/IconMesssage.vue'
 import ChatFileDetails from '@/modules/Chat/components/FileDetails.vue'
+import ChatErrorCard from '@/modules/Chat/components/ErrorCard.vue'
 
 const {
   sendMessage,
@@ -34,11 +35,6 @@ const messageContainer = ref<HTMLUListElement | null>(null)
 
 const fileUploaderComp = ref<InstanceType<typeof ChatFileUploader> | null>(null)
 
-const submissionError = {
-  status: ref(false),
-  message: ref(''),
-}
-
 const payload = reactive<{
   body: string
   media: File | null
@@ -54,9 +50,32 @@ const agentTyping = {
   timeout: ref(0),
 }
 
+const mediaType = ref<'img' | 'doc'>('img')
+
+const error = {
+  status: ref(false),
+  message: ref(''),
+  timeout: ref(0),
+}
+
 const disableCustomerSendButton = computed(() => {
   return sendingMessage.value || payload.body.length <= 0
 })
+
+const setError = (message: string) => {
+  error.status.value = true
+  clearTimeout(error.timeout.value)
+  error.message.value = message
+  error.timeout.value = setTimeout(() => {
+    unsetError()
+  }, 7000)
+}
+
+const unsetError = () => {
+  clearTimeout(error.timeout.value)
+  error.status.value = false
+  error.message.value = ''
+}
 
 const triggerAgentTypingSignal = () => {
   agentTyping.isActive.value = true
@@ -66,11 +85,15 @@ const triggerAgentTypingSignal = () => {
   }, 3000)
 }
 
-const handleFileSelection = (file: File) => {
-  const fileIsValid = checkFileValidity(file)
+const handleFileSelection = (e: { file: File; type: 'img' | 'doc' }) => {
+  const fileIsValid = checkFileValidity(e.file)
+
+  !fileIsValid.status && setError(fileIsValid.message)
+
   if (fileIsValid.status) {
     showFileDetails.value = true
-    payload.media = file
+    payload.media = e.file
+    mediaType.value = e.type
   }
 }
 
@@ -183,7 +206,7 @@ onMounted(() => {
 
       <!-- message -->
       <ul
-        class="cura:flex cura:flex-col cura:w-full cura:gap-4 cura:overflow-y-auto cura:bg-white/50 cura:pb-43 cura:scroll-smooth"
+        class="cura:flex cura:flex-col cura:w-full cura:gap-4 cura:overflow-y-auto cura:bg-white/50 cura:pb-43 cura:scroll-smooth cura:pr-3"
         id="messageContainer"
       >
         <ChatResponses v-for="responder in chatHistory" :responder="responder" />
@@ -218,9 +241,21 @@ onMounted(() => {
               @closeFileDetail="closeFileDetails"
               v-if="showFileDetails"
               :media="payload.media"
+              :type="mediaType"
+              :loading="sendingMessage"
             ></ChatFileDetails>
           </Transition>
           <!-- file viewer end-->
+
+          <!-- Error notification -->
+          <Transition name="zoom">
+            <ChatErrorCard
+              v-if="error.status.value"
+              :message="error.message.value"
+              @closeError="unsetError"
+            />
+          </Transition>
+          <!-- Error notification end -->
 
           <textarea
             name=""
