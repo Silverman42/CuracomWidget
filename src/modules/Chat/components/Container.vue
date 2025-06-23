@@ -13,6 +13,8 @@ import IconLoading from '@/components/icons/IconLoading.vue'
 import IconMesssage from '@/components/icons/IconMesssage.vue'
 import ChatFileDetails from '@/modules/Chat/components/FileDetails.vue'
 import ChatErrorCard from '@/modules/Chat/components/ErrorCard.vue'
+import type { AxiosError } from 'axios'
+import type { IResponse } from '@/utils/types/response/global'
 
 const {
   sendMessage,
@@ -155,7 +157,10 @@ const handleChatSend = () => {
         scrollToBottom()
       })
     })
-    .catch(() => {})
+    .catch((error) => {
+      const err = error as AxiosError<IResponse>
+      setError(err.response?.data.message || 'Something went wrong')
+    })
 }
 
 const closeDialogueBoxes = (e: MouseEvent) => {
