@@ -25,7 +25,7 @@ const agentData = computed(() => initiatorData.value?.customer?.agent)
       />
       <div class="cura:w-full cura:overflow-hidden">
         <h2
-          class="cura:text-white cura:font-medium cura:whitespace-nowrap cura:text-ellipsis cura:text-sm cura:md:text-base cura:w-full cura:overflow-hidden"
+          class="cura:text-white cura:capitalize cura:font-medium cura:whitespace-nowrap cura:text-ellipsis cura:text-sm cura:md:text-base cura:w-full cura:overflow-hidden"
         >
           {{ agentData?.name || 'Unknown Agent' }}
         </h2>
