@@ -82,11 +82,13 @@ export const useChatStore = createGlobalState(() => {
       successCallback: (e: IChatHistory) => void,
       errorCallback: (e: any) => void,
     ) {
-      channelInstance.value?.listen('MessageSent', (e: IChatHistory) => {
-        action.appendSingleToQueue(e).then(() => {
-          successCallback(e)
+      channelInstance.value
+        ?.stopListening('MessageSent')
+        ?.listen('MessageSent', (e: IChatHistory) => {
+          action.appendSingleToQueue(e).then(() => {
+            successCallback(e)
+          })
         })
-      })
       channelInstance.value?.error((e: any) => {
         errorCallback(e)
       })

@@ -39,6 +39,10 @@ const props = withDefaults(defineProps<{ responder: IChatHistory | null }>(), {
       >
         <!-- text response -->
         <blockquote
+          v-if="
+            props.responder?.type === MessageType.TEXT ||
+            props.responder?.type === MessageType.IMAGE_TEXT
+          "
           class="cura:p-4 cura:bg-[var(--client-message-color)] cura:rounded-[10px] cura:text-black cura:text-sm cura:inline-block cura:w-auto"
           :style="{
             '--client-message-color':
@@ -85,7 +89,10 @@ const props = withDefaults(defineProps<{ responder: IChatHistory | null }>(), {
           </div>
 
           <a
-            v-if="props.responder?.type === MessageType.IMAGE_TEXT"
+            v-if="
+              props.responder?.type === MessageType.IMAGE_TEXT ||
+              props.responder?.type === MessageType.IMAGE
+            "
             target="_blank"
             class="cura:w-full cura:block"
             :href="props.responder?.media"
