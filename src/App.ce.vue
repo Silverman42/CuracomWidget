@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import NewChatForm from '@/modules/NewUser/components/Form.vue'
 import ChatContainer from '@/modules/Chat/components/Container.vue'
 import IconNewChat from './components/icons/IconNewChat.vue'
@@ -16,7 +16,7 @@ const { config, openChat, setNewUserForm, closeChat, unsetNewUserForm } = useCon
 
 const { iniateChatConnect, initiatorData } = useInitiatorStore()
 
-const { createInstance } = useWebSocketHandler()
+const { createInstance, socketInstance } = useWebSocketHandler()
 
 const widgetIsLoaded = ref(false)
 
@@ -38,6 +38,8 @@ const handleNewChat = () => {
 const customerIsNew = computed(() => {
   return initiatorData.value?.customer === null
 })
+
+const customerData = computed(() => initiatorData.value?.customer)
 
 const handlePageLogging = () => {
   if (logPagePayload.value.url !== window.location.href) {
@@ -61,7 +63,19 @@ const detectReplaceState = () => {
   // })
 }
 
+const checkUserVisibility = (uid: string) => {
+  socketInstance.value?.join('me' + uid)
+}
+
 detectReplaceState()
+
+watch(
+  customerData,
+  (newValue) => {
+    checkUserVisibility(newValue?.uid || '')
+  },
+  { immediate: true, deep: true },
+)
 
 onMounted(() => {
   iniateChatConnect()

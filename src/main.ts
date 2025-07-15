@@ -2,7 +2,6 @@ import './assets/main.css'
 
 import { createApp, defineCustomElement } from 'vue'
 import App from './App.ce.vue'
-
 ;(function () {
   const installComponent = () => {
     const CuracomPlugin = defineCustomElement(App)
