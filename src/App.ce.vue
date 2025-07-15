@@ -64,7 +64,8 @@ const detectReplaceState = () => {
 }
 
 const checkUserVisibility = (uid: string) => {
-  socketInstance.value?.join('me' + uid)
+  socketInstance.value?.leaveChannel('me.' + uid)
+  socketInstance.value?.join('me.' + uid)
 }
 
 detectReplaceState()
@@ -72,7 +73,7 @@ detectReplaceState()
 watch(
   customerData,
   (newValue) => {
-    checkUserVisibility(newValue?.uid || '')
+    newValue !== null && checkUserVisibility(newValue?.uid || '')
   },
   { immediate: true, deep: true },
 )
@@ -81,7 +82,8 @@ onMounted(() => {
   iniateChatConnect()
     .then(async (response) => {
       // handlePageLogging()
-      await createInstance(response.data)
+      response.data?.customer !== null && (await createInstance(response.data))
+      await checkUserVisibility(response.data?.customer?.uid || '')
       await appendManyToQueue(response.data?.customer?.history || [])
       await checkForNewUser()
       widgetIsLoaded.value = true

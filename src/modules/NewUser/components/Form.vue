@@ -12,12 +12,15 @@ import { useInitiatorStore } from '@/composables/initiator.store'
 import type { ICountryPhoneCode } from '@/utils/types/response/Initiator'
 import { useNewUserStore } from '../composables/useNewUser.store'
 import { useChatStore } from '@/modules/Chat/composables/chat.store'
+import { useWebSocketHandler } from '@/composables/websocket.handler'
 
 const { unsetNewUserForm, config } = useConfigHandler()
 
 const { initiatorData, updateCustomer } = useInitiatorStore()
 
 const { createNewUser, creatingNewUser } = useNewUserStore()
+
+const { createInstance } = useWebSocketHandler()
 
 const payload = reactive({
   name: '',
@@ -88,6 +91,7 @@ const handleNewChat = () => {
       .then((res) => {
         appendManyToQueue(res.data.customer.history || []).then(() => {
           updateCustomer(res.data.customer)
+          createInstance(initiatorData.value)
           unsetNewUserForm()
         })
       })
