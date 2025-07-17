@@ -14,8 +14,7 @@ export const ApiClient = () => {
   customHeaders[import.meta.env.VITE_X_CURACOM_WIDGET_HEADER] =
     window.localStorage.getItem(import.meta.env.VITE_WIDGET_ID) || 'None'
 
-  customHeaders[import.meta.env.VITE_X_SOCKET_ID_HEADER] =
-    useWebSocketHandler()?.socketInstance?.value?.socketId() || ''
+  customHeaders['X-Socket-ID'] = useWebSocketHandler()?.socketInstance?.value?.socketId() || ''
 
   customHeaders['X-CURACOM-SESSION'] = getSessionId() || ''
 
