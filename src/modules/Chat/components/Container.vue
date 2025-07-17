@@ -173,6 +173,15 @@ onMounted(() => {
   scrollToBottom()
 
   joinChat()
+    ?.here((e: any) => {
+      console.log('here', e)
+    })
+    ?.joining((e: any) => {
+      console.log('joining', e)
+    })
+    ?.leaving((e: any) => {
+      console.log('leaving', e)
+    })
 
   listenForNewMessage(
     (e) => {

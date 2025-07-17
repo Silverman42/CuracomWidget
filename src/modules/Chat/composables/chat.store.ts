@@ -76,6 +76,7 @@ export const useChatStore = createGlobalState(() => {
         useWebSocketHandler().socketInstance.value?.join(
           `chat.${useInitiatorStore().initiatorData.value.customer?.chat_uid}`,
         ) || null
+      return channelInstance.value
     },
 
     listenForNewMessage(
