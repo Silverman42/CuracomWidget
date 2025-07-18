@@ -96,11 +96,9 @@ export const useChatStore = createGlobalState(() => {
     },
 
     whisperKeyPress() {
-      console.log(
-        channelInstance.value?.whisper('typing', {
-          name: 'Customer',
-        }),
-      )
+      channelInstance.value?.whisper('typing', {
+        name: 'Customer',
+      })
     },
 
     listenForAgentWhisper(

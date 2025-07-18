@@ -174,13 +174,13 @@ onMounted(() => {
 
   joinChat()
     ?.here((e: any) => {
-      console.log('here', e)
+      // console.log('here', e)
     })
     ?.joining((e: any) => {
-      console.log('joining', e)
+      // console.log('joining', e)
     })
     ?.leaving((e: any) => {
-      console.log('leaving', e)
+      // console.log('leaving', e)
     })
 
   listenForNewMessage(
@@ -275,7 +275,7 @@ onMounted(() => {
             name=""
             rows="3"
             style="resize: none"
-            @keydown.enter="handleChatKeyPress"
+            @keydown="handleChatKeyPress"
             class="cura:border-0 cura:w-full cura:outline-none cura:peer cura:relative cura:z-[3] cura:placeholder:text-[#CCCCCC]"
             placeholder="Type something"
             id=""
