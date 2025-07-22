@@ -14,7 +14,7 @@ import { useNewUserStore } from '../composables/useNewUser.store'
 import { useChatStore } from '@/modules/Chat/composables/chat.store'
 import { useWebSocketHandler } from '@/composables/websocket.handler'
 
-const { unsetNewUserForm, config } = useConfigHandler()
+const { unsetNewUserForm, closeChat } = useConfigHandler()
 
 const { initiatorData, updateCustomer } = useInitiatorStore()
 
@@ -25,8 +25,8 @@ const { createInstance } = useWebSocketHandler()
 const payload = reactive({
   name: '',
   email: '',
-  dial_code: '',
-  phone: '',
+  // dial_code: '',
+  // phone: '',
 })
 
 const phoneNumberParams = reactive({
@@ -53,20 +53,20 @@ const validations = computed(() => {
       required: helpers.withMessage('Email is required', required),
       email: helpers.withMessage('Invalid email', required),
     },
-    phone: {
-      requiredIf: helpers.withMessage(
-        'Phone number is required',
-        requiredIf(() => phoneNumberParams.number_length > 0),
-      ),
-      minLength: helpers.withMessage(
-        'Phone number length must be ' + phoneNumberParams.number_length + ' digits',
-        minLength(phoneNumberParams.number_length),
-      ),
-      maxLength: helpers.withMessage(
-        'Phone number length must be ' + phoneNumberParams.number_length + ' digits',
-        maxLength(phoneNumberParams.number_length),
-      ),
-    },
+    // phone: {
+    //   requiredIf: helpers.withMessage(
+    //     'Phone number is required',
+    //     requiredIf(() => phoneNumberParams.number_length > 0),
+    //   ),
+    //   minLength: helpers.withMessage(
+    //     'Phone number length must be ' + phoneNumberParams.number_length + ' digits',
+    //     minLength(phoneNumberParams.number_length),
+    //   ),
+    //   maxLength: helpers.withMessage(
+    //     'Phone number length must be ' + phoneNumberParams.number_length + ' digits',
+    //     maxLength(phoneNumberParams.number_length),
+    //   ),
+    // },
   }
 })
 
@@ -107,14 +107,21 @@ const handleNewChat = () => {
   >
     <!-- head -->
     <div
-      class="cura:bg-[var(--cura-header-bg)] cura:py-4 cura:flex cura:justify-center cura:w-full"
+      class="cura:bg-[var(--cura-header-bg)] cura:p-4 cura:flex cura:justify-between cura:items-center cura:w-full"
       :style="{ '--cura-header-bg': 'black' }"
     >
-      <img
+      <div></div>
+      <!-- <img
         :src="`${config.baseUrl}/img/cura_logo.svg`"
         class="cura:w-20 cura:h-10 cura:object-contain cura:object-center"
         alt=""
-      />
+      /> -->
+      <button
+        @click="closeChat"
+        class="cura:bg-[#FB583A] cura:p-3 cura:px-4 cura:text-white cura:text-xs cura:flex cura:items-center cura:justify-center cura:rounded-[8px] cura:whitespace-nowrap"
+      >
+        End chat
+      </button>
     </div>
     <!-- head -->
 
@@ -144,7 +151,7 @@ const handleNewChat = () => {
         />
       </AppInputContainer>
 
-      <div>
+      <!-- <div>
         <AppGroupInput
           :error="v$.phone?.$errors![0]?.$message.toString() || ''"
           label="Phone Number"
@@ -182,7 +189,7 @@ const handleNewChat = () => {
             </div>
           </template>
         </AppGroupInput>
-      </div>
+      </div> -->
 
       <div class="cura:pt-4">
         <AppButton :loading="creatingNewUser" :block="true">Submit</AppButton>

@@ -17,8 +17,8 @@ export const useNewUserStore = createGlobalState(() => {
     async createNewUser(payload: {
       name: string
       email: string
-      dial_code: string
-      phone: string
+      // dial_code: string
+      // phone: string
     }) {
       creatingNewUser.value = true
       try {
