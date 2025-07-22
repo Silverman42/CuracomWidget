@@ -1,5 +1,6 @@
 import { ApiClient } from '@/utils/helpers/ApiClient'
 import { ApiRoutes } from '@/utils/helpers/ApiRoutes'
+import { GetToken } from '@/utils/helpers/GetToken'
 import type { IResponse } from '@/utils/types/response/global'
 import type { ICustomer, IIdentifierResponse } from '@/utils/types/response/Initiator'
 import { createGlobalState } from '@vueuse/core'
@@ -11,6 +12,7 @@ export const useInitiatorStore = createGlobalState(() => {
     customer: null,
     countries: null,
     websocket_config: null,
+    visitor: null,
   })
 
   const action = {
@@ -20,6 +22,9 @@ export const useInitiatorStore = createGlobalState(() => {
           ApiRoutes.VISITOR_IDENTIFY,
         )
         initiatorData.value = data.data
+
+        window.localStorage.setItem(`curacom|${GetToken()}`, data.data.visitor?.uid || '')
+
         return data
       } catch (error) {
         const err = error as AxiosError

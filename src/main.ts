@@ -2,6 +2,7 @@ import './assets/main.css'
 
 import { createApp, defineCustomElement } from 'vue'
 import App from './App.ce.vue'
+import { GetToken } from './utils/helpers/GetToken'
 ;(function () {
   const installComponent = () => {
     const CuracomPlugin = defineCustomElement(App)
@@ -10,19 +11,7 @@ import App from './App.ce.vue'
   // createApp(App).mount('#app')
 
   const saveWidgetToken = () => {
-    let token: string = 'QdiR8tnXeZSbP2TIYCZNxzJi2ocKERdc'
-
-    if (import.meta.env.MODE === 'production') {
-      const widgetScript = document.querySelector(
-        `#${import.meta.env.VITE_WIDGET_ID}`,
-      ) as HTMLScriptElement
-
-      const url = new URL(widgetScript?.src || '')
-
-      token = url.searchParams.get('id') || ''
-    }
-
-    window.localStorage.setItem(import.meta.env.VITE_WIDGET_ID, token)
+    window.localStorage.setItem(import.meta.env.VITE_WIDGET_ID, GetToken())
   }
 
   function loadCss() {

@@ -22,7 +22,7 @@ export const useWebSocketHandler = createGlobalState(() => {
           window.localStorage.getItem(import.meta.env.VITE_WIDGET_ID) || 'None'
 
         customHeaders[import.meta.env.VITE_X_CURACOM_COOKIE_HEADER] =
-          identifierResponse?.customer?.uid || ''
+          identifierResponse?.visitor?.uid || ''
 
         socketInstance.value = new Echo({
           broadcaster: identifierResponse?.websocket_config?.broadcaster || 'reverb',

@@ -2,6 +2,11 @@ export interface IIdentifierResponse {
   websocket_config: null | WebsocketConfig
   customer: null | ICustomer
   countries: null | ICountryPhoneCode[]
+  visitor: null | IVisitor
+}
+
+export interface IVisitor {
+  uid: string
 }
 
 export interface IAgent {
