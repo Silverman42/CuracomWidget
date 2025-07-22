@@ -10,6 +10,7 @@ interface ContainerProps {
   note?: string
   type?: string
 }
+
 const containerProps = withDefaults(defineProps<ContainerProps>(), {
   label: '',
   prefix: '',

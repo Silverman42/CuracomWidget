@@ -67,6 +67,23 @@
   --color-secondary-950: #030318;
 }
 
+/* Ensure all widget styles are scoped to the custom element */
+curacom-plugin {
+  all: initial;
+  font-family:
+    var(--font-body),
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  box-sizing: border-box;
+}
+
+curacom-plugin * {
+  box-sizing: border-box;
+}
+
 /* Transitions */
 .slideInRight-enter-active,
 .slideInRight-leave-active {

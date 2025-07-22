@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shadow DOM Test</title>
+    <style>
+      /* These styles should NOT affect the widget due to shadow DOM encapsulation */
+      body {
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      .test-button {
+        background-color: red !important;
+        color: white !important;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        margin: 10px;
+      }
+
+      .test-text {
+        color: blue !important;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      /* This should not affect the widget */
+      curacom-plugin {
+        background-color: yellow !important;
+        border: 5px solid red !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Shadow DOM Encapsulation Test</h1>
+
+    <p class="test-text">This text should be blue and bold due to CSS rules.</p>
+
+    <button class="test-button">This button should be red due to CSS rules.</button>
+
+    <p>
+      Below is the Curacom widget. Its styles should be completely isolated from the page styles
+      above.
+    </p>
+
+    <!-- The widget will be automatically added here by the script -->
+
+    <script type="module" src="/src/main.ts"></script>
+
+    <script>
+      // Add some additional test styles after the widget loads
+      setTimeout(() => {
+        const style = document.createElement('style')
+        style.textContent = `
+                .test-button {
+                    background-color: green !important;
+                }
+                curacom-plugin {
+                    background-color: orange !important;
+                }
+            `
+        document.head.appendChild(style)
+      }, 2000)
+    </script>
+  </body>
+</html>
