@@ -13,6 +13,7 @@ import type { ICountryPhoneCode } from '@/utils/types/response/Initiator'
 import { useNewUserStore } from '../composables/useNewUser.store'
 import { useChatStore } from '@/modules/Chat/composables/chat.store'
 import { useWebSocketHandler } from '@/composables/websocket.handler'
+import IconClose from '@/components/icons/IconClose.vue'
 
 const { unsetNewUserForm, closeChat } = useConfigHandler()
 
@@ -118,9 +119,9 @@ const handleNewChat = () => {
       /> -->
       <button
         @click="closeChat"
-        class="cura:bg-[#FB583A] cura:p-3 cura:px-4 cura:text-white cura:text-xs cura:flex cura:items-center cura:justify-center cura:rounded-[8px] cura:whitespace-nowrap"
+        class="cura:w-[32px] cura:h-[32px] cura:text-white cura:hover:text-red-300 cura:hover:border-red-300 cura:rounded-full cura:flex cura:items-center cura:justify-center cura:border cura:border-[#EDEFF2]"
       >
-        End chat
+        <IconClose :size="20"></IconClose>
       </button>
     </div>
     <!-- head -->
