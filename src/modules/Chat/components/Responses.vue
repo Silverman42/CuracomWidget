@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<{ responder: IChatHistory | null }>(), {
             'cura:rounded-bl-none': props.responder?.sender === SenderType.AGENT,
           }"
         >
-          <p class="cura:pt-0">
+          <p class="cura:mt-0">
             {{ props.responder?.body }}
           </p>
         </blockquote>
