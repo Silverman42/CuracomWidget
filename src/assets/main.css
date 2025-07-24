@@ -1,4 +1,4 @@
-@import 'tailwindcss' prefix(cura);
+@import 'tailwindcss' prefix(cura) important;
 
 @font-face {
   font-family: 'Sf Pro Display';
