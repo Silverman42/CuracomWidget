@@ -68,6 +68,10 @@
 }
 
 /* Ensure all widget styles are scoped to the custom element */
+p {
+  @apply m-0;
+}
+
 curacom-plugin {
   all: initial;
   font-family:
