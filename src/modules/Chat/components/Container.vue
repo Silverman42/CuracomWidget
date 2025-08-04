@@ -201,7 +201,7 @@ onMounted(() => {
 </script>
 <template>
   <div
-    class="cura:h-svh cura:md:h-[643px] cura:flex cura:flex-col cura:w-svw cura:md:w-[400px] cura:bg-white cura:border cura:border-[#EDEFF2] cura:overflow-hidden cura:md:rounded-[20px] cura:relative"
+    class="cura:h-svh cura:md:h-[70vh] cura:md:max-h-[643px] cura:flex cura:flex-col cura:w-svw cura:md:w-[400px] cura:bg-white cura:border cura:border-[#EDEFF2] cura:overflow-hidden cura:md:rounded-[20px] cura:relative"
     @click="closeDialogueBoxes($event)"
     id="cura-message-container"
   >
