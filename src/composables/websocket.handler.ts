@@ -7,6 +7,8 @@ import { ref } from 'vue'
 export const useWebSocketHandler = createGlobalState(() => {
   const socketInstance = ref<Echo<'reverb'> | null>(null)
 
+  const socketInstanceCreated = ref(false)
+
   const customHeaders: {
     [key: string]: string
   } = {}
@@ -37,6 +39,8 @@ export const useWebSocketHandler = createGlobalState(() => {
             headers: customHeaders,
           },
         })
+
+        socketInstanceCreated.value = true
       } catch (error) {}
     },
 
@@ -47,6 +51,7 @@ export const useWebSocketHandler = createGlobalState(() => {
 
   return {
     socketInstance,
+    socketInstanceCreated,
     ...actions,
   }
 })

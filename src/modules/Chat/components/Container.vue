@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import IconMicrophone from '@/components/icons/IconMicrophone.vue'
 import IconSend from '@/components/icons/IconSend.vue'
-import IconSmiley from '@/components/icons/IconSmiley.vue'
 import { useConfigHandler } from '@/composables/config.handler'
 import ChatResponses from '@/modules/Chat/components/Responses.vue'
 import ChatHeader from '@/modules/Chat/components/Header.vue'
@@ -183,13 +181,6 @@ onMounted(() => {
       // console.log('leaving', e)
     })
 
-  listenForNewMessage(
-    (e) => {
-      scrollToBottom()
-    },
-    () => {},
-  )
-
   listenForAgentWhisper(
     (e) => {
       scrollToBottom()
@@ -197,6 +188,10 @@ onMounted(() => {
     },
     () => {},
   )
+})
+
+defineExpose({
+  scrollToBottom,
 })
 </script>
 <template>

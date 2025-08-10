@@ -18,6 +18,8 @@ export const useChatStore = createGlobalState(() => {
 
   const channelInstance = ref<Broadcaster['reverb']['presence'] | null>(null)
 
+  const notifyQueue = ref<IChatHistory[]>([])
+
   const action = {
     async sendMessage(payload: { body?: string; media?: File | null }) {
       sendingMessage.value = true
@@ -72,10 +74,11 @@ export const useChatStore = createGlobalState(() => {
     },
 
     joinChat() {
-      channelInstance.value =
-        useWebSocketHandler().socketInstance.value?.join(
-          `chat.${useInitiatorStore().initiatorData.value.customer?.chat_uid}`,
-        ) || null
+      channelInstance.value === null &&
+        (channelInstance.value =
+          useWebSocketHandler().socketInstance.value?.join(
+            `chat.${useInitiatorStore().initiatorData.value.customer?.chat_uid}`,
+          ) || null)
       return channelInstance.value
     },
 
@@ -86,13 +89,28 @@ export const useChatStore = createGlobalState(() => {
       channelInstance.value
         ?.stopListening('MessageSent')
         ?.listen('MessageSent', (e: IChatHistory) => {
-          action.appendSingleToQueue(e).then(() => {
-            successCallback(e)
-          })
+          successCallback(e)
         })
       channelInstance.value?.error((e: any) => {
         errorCallback(e)
       })
+    },
+
+    listenAndNotify() {
+      channelInstance.value
+        ?.stopListening('MessageSent')
+        ?.listen('MessageSent', (e: IChatHistory) => {
+          action.appendToNotifyQueue(e)
+        })
+    },
+
+    appendToNotifyQueue(payload: IChatHistory) {
+      notifyQueue.value.length === 5 && notifyQueue.value.shift()
+      notifyQueue.value.push(payload)
+    },
+
+    emptyNotifyQueue() {
+      notifyQueue.value = []
     },
 
     whisperKeyPress() {
@@ -118,6 +136,7 @@ export const useChatStore = createGlobalState(() => {
     sendingMessage,
     sendingAgentMessage,
     chatQueue,
+    notifyQueue,
     channelInstance,
     ...action,
   }

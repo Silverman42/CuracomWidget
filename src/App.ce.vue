@@ -7,28 +7,38 @@ import IconClose from '@/components/icons/IconClose.vue'
 import { useConfigHandler } from './composables/config.handler'
 import { useInitiatorStore } from './composables/initiator.store'
 import { useWebSocketHandler } from './composables/websocket.handler'
-import { useUrlChangeHandler } from './composables/urlChange.handler'
 import { useLogPageStore } from './composables/logPage.store'
-import { set } from '@vueuse/core'
 import { useChatStore } from './modules/Chat/composables/chat.store'
 
 const { config, openChat, setNewUserForm, closeChat, unsetNewUserForm } = useConfigHandler()
 
 const { iniateChatConnect, initiatorData } = useInitiatorStore()
 
-const { createInstance, socketInstance } = useWebSocketHandler()
+const { createInstance, socketInstance, socketInstanceCreated } = useWebSocketHandler()
 
 const widgetIsLoaded = ref(false)
 
 const { setLogPagePayload, logPageVisit, logPagePayload } = useLogPageStore()
 
-const { appendManyToQueue } = useChatStore()
+const {
+  appendManyToQueue,
+  joinChat,
+  notifyQueue,
+  emptyNotifyQueue,
+  listenForNewMessage,
+  appendSingleToQueue,
+  appendToNotifyQueue,
+} = useChatStore()
 
 const checkForNewUser = () => {
   if (customerIsNew.value) {
     setNewUserForm()
   }
 }
+
+const notifyAudio = ref<HTMLAudioElement | null>(null)
+
+const chatContainer = ref<InstanceType<typeof ChatContainer> | null>(null)
 
 const handleNewChat = () => {
   checkForNewUser()
@@ -40,6 +50,8 @@ const customerIsNew = computed(() => {
 })
 
 const customerData = computed(() => initiatorData.value?.customer)
+
+const chatIsOpen = computed(() => config.value.isOpen && config.value.newUserFormActive === false)
 
 const handlePageLogging = () => {
   if (logPagePayload.value.url !== window.location.href) {
@@ -78,6 +90,50 @@ watch(
   { immediate: true, deep: true },
 )
 
+const notifyBeforeChatView = () => {
+  joinChat()
+  listenForNewMessage(
+    (e) => {
+      notifyAudio.value?.play().catch((error) => {
+        console.error('Audio playback failed:', error)
+      })
+      appendSingleToQueue(e).then(() => {
+        appendToNotifyQueue(e)
+      })
+    },
+    () => {},
+  )
+}
+
+const appendAfterChatView = () => {
+  emptyNotifyQueue()
+  joinChat()
+  listenForNewMessage(
+    (e) => {
+      appendSingleToQueue(e).then(() => {
+        chatContainer.value?.scrollToBottom()
+      })
+    },
+    () => {},
+  )
+}
+
+watch(
+  () => socketInstanceCreated.value,
+  (newValue) => {
+    newValue === true && notifyBeforeChatView()
+  },
+  { deep: true },
+)
+
+watch(
+  chatIsOpen,
+  (newValue) => {
+    newValue === false ? notifyBeforeChatView() : appendAfterChatView()
+  },
+  { immediate: true },
+)
+
 onMounted(() => {
   iniateChatConnect()
     .then(async (response) => {
@@ -108,7 +164,7 @@ onUnmounted(() => {
         }"
       >
         <Transition mode="out-in" name="zoom">
-          <template v-if="config.isOpen">
+          <template key="chat-container" v-if="config.isOpen">
             <div>
               <Transition name="slideInRight" mode="out-in">
                 <!-- user entry form end -->
@@ -135,16 +191,36 @@ onUnmounted(() => {
             </div>
           </template>
 
-          <!-- chat trigger button -->
-          <button
-            v-else
-            class="cura:w-18.5 cura:ml-auto cura:h-18.5 cura:rounded-full cura:bg-[var(--cura-open-chat-btn)] cura:flex cura:items-center cura:justify-center cura:cursor-pointer cura:text-white cura:hover:brightness-80"
-            @click="handleNewChat"
-            :style="{ '--cura-open-chat-btn': '#6666FF' }"
-          >
-            <IconNewChat :size="36"></IconNewChat>
-          </button>
-          <!-- chat trigger button end-->
+          <div key="chat-starter" v-else class="cura:inline-block cura:relative">
+            <div
+              class="cura:flex cura:items-end cura:flex-col cura:gap-1 cura:absolute cura:top-0 cura:translate-y-[-120%] cura:right-0"
+            >
+              <button
+                @click="emptyNotifyQueue"
+                class="cura:w-[32px] cura:mb-3 cura:h-[32px] cura:text-black cura:bg-white cura:rounded-full cura:flex cura:items-center cura:justify-center cura:border cura:border-[#EDEFF2]"
+                v-if="notifyQueue.length > 0"
+              >
+                <IconClose :size="20"></IconClose>
+              </button>
+              <div
+                v-for="newChat in notifyQueue"
+                class="cura:max-w-60 cura:inline-block cura:p-2 cura:px-4 cura:bg-black cura:rounded-full cura:text-white cura:text-xs cura:whitespace-nowrap cura:overflow-hidden cura:text-ellipsis"
+              >
+                {{ newChat.body }}
+              </div>
+            </div>
+
+            <!-- chat trigger button -->
+            <button
+              class="cura:w-18.5 cura:ml-auto cura:h-18.5 cura:rounded-full cura:bg-[var(--cura-open-chat-btn)] cura:flex cura:items-center cura:justify-center cura:cursor-pointer cura:text-white cura:hover:brightness-80"
+              @click="handleNewChat"
+              :style="{ '--cura-open-chat-btn': '#6666FF' }"
+            >
+              <IconNewChat :size="36"></IconNewChat>
+            </button>
+            <!-- chat trigger button end-->
+            <!-- <audio ref="notifyAudio" :src="config.baseUrl + '/audio/notify.mp3'"></audio> -->
+          </div>
         </Transition>
       </div>
     </Teleport>
