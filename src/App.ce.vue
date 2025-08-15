@@ -104,6 +104,7 @@ const notifyBeforeChatView = () => {
 }
 
 const appendAfterChatView = () => {
+  console.log('notifyAfterChatView')
   emptyNotifyQueue()
   joinChat()
   listenForNewMessage(
