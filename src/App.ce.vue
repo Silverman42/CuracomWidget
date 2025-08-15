@@ -154,7 +154,7 @@ onUnmounted(() => {
     <Teleport to="body">
       <div
         v-if="widgetIsLoaded"
-        class="cura:w-auto cura:h-auto cura:z-1000 cura:fixed cura:font-body overflow-hidden"
+        class="cura:w-auto cura:h-auto cura:z-1000 cura:fixed cura:font-body"
         :class="{
           'cura:bottom-0 cura:right-0 cura:md:bottom-4 cura:md:right-4 ': config.isOpen,
           'cura:right-4 cura:bottom-4': !config.isOpen,
@@ -211,12 +211,11 @@ onUnmounted(() => {
 
             <!-- chat trigger button -->
             <button
-              class="cura:w-18.5 cura:ml-auto cura:h-18.5 cura:rounded-full cura:bg-[var(--cura-open-chat-btn)] cura:flex cura:items-center cura:justify-center cura:cursor-pointer cura:text-white cura:hover:brightness-80"
+              class="cura:w-18.5 cura:ml-auto cura:h-18.5 cura:rounded-full cura:bg-[var(--cura-open-chat-btn)] cura:flex cura:items-center cura:justify-center cura:cursor-pointer cura:text-white cura:hover:brightness-80 cura:relative"
               @click="handleNewChat"
               :style="{ '--cura-open-chat-btn': '#6666FF' }"
             >
               <IconNewChat :size="36"></IconNewChat>
-              {{ notifyQueue.length }}
             </button>
             <!-- chat trigger button end-->
             <!-- <audio ref="notifyAudio" :src="config.baseUrl + '/audio/notify.mp3'"></audio> -->
