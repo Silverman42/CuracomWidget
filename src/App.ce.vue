@@ -174,9 +174,11 @@ onUnmounted(() => {
                 <!-- user entry form end -->
 
                 <!-- chat body -->
-                <div class="inline-block w-auto" v-else>
-                  <ChatContainer></ChatContainer>
-                </div>
+                <KeepAlive v-else>
+                  <div class="inline-block w-auto">
+                    <ChatContainer></ChatContainer>
+                  </div>
+                </KeepAlive>
                 <!-- chat body -->
               </Transition>
 
