@@ -143,6 +143,7 @@ onMounted(() => {
       await appendManyToQueue(response.data?.customer?.history || [])
       await checkForNewUser()
       widgetIsLoaded.value = true
+      console.log('Console emiited')
     })
     .catch((err) => {})
 })
