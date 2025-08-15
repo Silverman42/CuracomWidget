@@ -218,6 +218,7 @@ onUnmounted(() => {
               :style="{ '--cura-open-chat-btn': '#6666FF' }"
             >
               <IconNewChat :size="36"></IconNewChat>
+              {{ notifyQueue.length }}
             </button>
             <!-- chat trigger button end-->
             <!-- <audio ref="notifyAudio" :src="config.baseUrl + '/audio/notify.mp3'"></audio> -->
