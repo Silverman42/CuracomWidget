@@ -124,7 +124,7 @@ import { GetToken } from './utils/helpers/GetToken'
 
     // In production mode, load external CSS and add plugin
     if (import.meta.env.MODE === 'production') {
-      // loadCss()
+      loadCss()
       addPlugin()
     } else {
       // In development mode, just add the plugin (styles are already loaded)
