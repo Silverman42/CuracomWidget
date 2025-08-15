@@ -94,7 +94,6 @@ const notifyBeforeChatView = () => {
   joinChat()
   listenForNewMessage(
     (e) => {
-      console.log(notifyQueue.value)
       appendSingleToQueue(e).then(() => {
         appendToNotifyQueue(e)
       })
@@ -104,7 +103,6 @@ const notifyBeforeChatView = () => {
 }
 
 const appendAfterChatView = () => {
-  console.log('notifyAfterChatView')
   emptyNotifyQueue()
   joinChat()
   listenForNewMessage(
@@ -198,14 +196,14 @@ onUnmounted(() => {
             >
               <button
                 @click="emptyNotifyQueue"
-                class="cura:w-[32px] cura:mb-3 cura:h-[32px] cura:text-black cura:bg-white cura:rounded-full cura:flex cura:items-center cura:justify-center cura:border cura:border-[#EDEFF2]"
+                class="cura:w-[32px] cura:mb-3 cura:h-[32px] cura:text-black cura:bg-white cura:rounded-full cura:flex cura:items-center cura:justify-center cura:border cura:border-[#EDEFF2] cura:relative cura:z-1000000000"
                 v-if="notifyQueue.length > 0"
               >
                 <IconClose :size="20"></IconClose>
               </button>
               <div
                 v-for="newChat in notifyQueue"
-                class="cura:max-w-60 cura:inline-block cura:p-2 cura:px-4 cura:bg-black cura:rounded-full cura:text-white cura:text-xs cura:whitespace-nowrap cura:overflow-hidden cura:text-ellipsis"
+                class="cura:max-w-60 cura:inline-block cura:p-2 cura:px-4 cura:bg-black cura:rounded-full cura:text-white cura:text-xs cura:whitespace-nowrap cura:overflow-hidden cura:text-ellipsis cura:relative cura:z-1000000000"
               >
                 {{ newChat.body }}
               </div>
