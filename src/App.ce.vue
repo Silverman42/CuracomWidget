@@ -192,7 +192,7 @@ onUnmounted(() => {
 
           <div key="chat-starter" v-else class="cura:inline-block cura:relative">
             <div
-              class="cura:flex cura:items-end cura:flex-col cura:gap-1 cura:absolute cura:top-0 cura:translate-y-[-120%] cura:right-0 cura:z-10000"
+              class="cura:flex cura:items-end cura:flex-col cura:gap-1 cura:absolute cura:top-0 cura:translate-y-[-107%] cura:right-0 cura:z-10000"
             >
               <button
                 @click="emptyNotifyQueue"
