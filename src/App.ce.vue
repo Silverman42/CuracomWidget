@@ -91,7 +91,7 @@ watch(
 )
 
 const notifyBeforeChatView = () => {
-  console.log('notifyBeforeChatView')
+  console.log(notifyQueue.value)
   joinChat()
   listenForNewMessage(
     (e) => {
