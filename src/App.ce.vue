@@ -91,12 +91,10 @@ watch(
 )
 
 const notifyBeforeChatView = () => {
+  console.log('notifyBeforeChatView')
   joinChat()
   listenForNewMessage(
     (e) => {
-      notifyAudio.value?.play().catch((error) => {
-        console.error('Audio playback failed:', error)
-      })
       appendSingleToQueue(e).then(() => {
         appendToNotifyQueue(e)
       })
@@ -143,7 +141,6 @@ onMounted(() => {
       await appendManyToQueue(response.data?.customer?.history || [])
       await checkForNewUser()
       widgetIsLoaded.value = true
-      console.log('Console emiited')
     })
     .catch((err) => {})
 })
