@@ -91,10 +91,10 @@ watch(
 )
 
 const notifyBeforeChatView = () => {
-  console.log(notifyQueue.value)
   joinChat()
   listenForNewMessage(
     (e) => {
+      console.log(notifyQueue.value)
       appendSingleToQueue(e).then(() => {
         appendToNotifyQueue(e)
       })
